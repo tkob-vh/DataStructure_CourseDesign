@@ -5,3 +5,13 @@
 * LASTREVISED: 2021.8.14
 ********************************************************************/
 
+#include<stdio.h>
+#include<ctype.h>
+#include<string.h>
+#include "GlobalVar.h"
+#include "SyntaxAnalyzer.h"
+#include "tree.h"
+
+bool program(){
+    
+}

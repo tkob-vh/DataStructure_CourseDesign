@@ -5,8 +5,8 @@ cmake_minimum_required(VERSION 3.25.1)
 project(Front_End_Compiler)
 
 #Set the C standard to use
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_C_STANDARD_REQUIRED True)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_subdirectory(FrontEnd)
 
