@@ -1,10 +1,10 @@
 /********************************************************************
-* FILE: LexicalAnalyzer.c
+* FILE: LexicalAnalyzer.cxx
 * DESCRIPTION:
 * This file is used to analyze the lexical of the source file using FSM.
 * 
 * AUTHOR: yyx
-* LASTREVISED: 2021.8.14
+* LASTREVISED: 2021.8.15
 ********************************************************************/
 
 #include<stdio.h>
@@ -63,6 +63,10 @@ int gettoken(FILE * source_file,char c){
     
     //If c is EOF, return END_OF_FILE
     if(c==EOF){
+        strcpy(token_text[token_counter],"EOF");
+        strcpy(t_kinds[token_counter],EnumtoStr(END_OF_FILE));
+        line_info[token_counter]=line_counter;
+        token_counter++;
         return END_OF_FILE;
     }
     
@@ -77,6 +81,7 @@ int gettoken(FILE * source_file,char c){
         token_text[token_counter][i]='\0';
         int t=LookupKeyword(token_counter);
         strcpy(t_kinds[token_counter],EnumtoStr(t));
+        line_info[token_counter]=line_counter;
         token_counter++;
         return t;
     }
@@ -94,10 +99,12 @@ int gettoken(FILE * source_file,char c){
         token_counter++;
         if(strchr(token_text[token_counter-1],'.')!=NULL){
             strcpy(t_kinds[token_counter-1],EnumtoStr(FLOAT_LITERAL));
+            line_info[token_counter-1]=line_counter;
             return FLOAT_LITERAL;
         }
         else{
             strcpy(t_kinds[token_counter-1],EnumtoStr(INT_LITERAL));
+            line_info[token_counter-1]=line_counter;
             return INT_LITERAL;
         }
     }
@@ -130,18 +137,21 @@ int gettoken(FILE * source_file,char c){
             token_text[token_counter][0]=c;
             token_text[token_counter][1]='\0';
             strcpy(t_kinds[token_counter],EnumtoStr(PLUS));
+            line_info[token_counter]=line_counter;
             token_counter++;
             return PLUS;
         case '-':
             token_text[token_counter][0]=c;
             token_text[token_counter][1]='\0';
             strcpy(t_kinds[token_counter],EnumtoStr(MINUS));
+            line_info[token_counter]=line_counter;
             token_counter++;
             return MINUS;
         case '*':
             token_text[token_counter][0]=c;
             token_text[token_counter][1]='\0';
             strcpy(t_kinds[token_counter],EnumtoStr(MULTIPLY));
+            line_info[token_counter]=line_counter;
             token_counter++;
             return MULTIPLY;
         case '/': //need modified!!!
@@ -159,6 +169,7 @@ int gettoken(FILE * source_file,char c){
                 token_text[token_counter][1]='\0';
                 ungetc(c,source_file);
                 strcpy(t_kinds[token_counter],EnumtoStr(DIVIDE));
+                line_info[token_counter]=line_counter;
                 token_counter++;
                 return DIVIDE;
             }
@@ -166,6 +177,7 @@ int gettoken(FILE * source_file,char c){
             token_text[token_counter][0]=c;
             token_text[token_counter][1]='\0';
             strcpy(t_kinds[token_counter],EnumtoStr(MOD));
+            line_info[token_counter]=line_counter;
             token_counter++;
             return MOD;
         }
@@ -178,6 +190,7 @@ int gettoken(FILE * source_file,char c){
                 token_text[token_counter][1]=c;
                 token_text[token_counter][2]='\0';
                 strcpy(t_kinds[token_counter],EnumtoStr(EQ));
+                line_info[token_counter]=line_counter;
                 token_counter++;
                 return EQ;
             }
@@ -185,6 +198,7 @@ int gettoken(FILE * source_file,char c){
                 token_text[token_counter][1]='\0';
                 ungetc(c,source_file);
                 strcpy(t_kinds[token_counter],EnumtoStr(ASSIGN));
+                line_info[token_counter]=line_counter;
                 token_counter++;
                 return ASSIGN;
             }
@@ -195,6 +209,7 @@ int gettoken(FILE * source_file,char c){
                 token_text[token_counter][1]=c;
                 token_text[token_counter][2]='\0';
                 strcpy(t_kinds[token_counter],EnumtoStr(NEQ));
+                line_info[token_counter]=line_counter;
                 token_counter++;
                 return NEQ;
             }
@@ -202,6 +217,7 @@ int gettoken(FILE * source_file,char c){
                 token_text[token_counter][1]='\0';
                 ungetc(c,source_file);
                 strcpy(t_kinds[token_counter],EnumtoStr(ERROR_TOKEN));
+                line_info[token_counter]=line_counter;
                 token_counter++;
                 return ERROR_TOKEN;
             }
@@ -212,6 +228,7 @@ int gettoken(FILE * source_file,char c){
                 token_text[token_counter][1]=c;
                 token_text[token_counter][2]='\0';
                 strcpy(t_kinds[token_counter],EnumtoStr(GREATER_EQ));
+                line_info[token_counter]=line_counter;
                 token_counter++;
                 return GREATER_EQ;
             }
@@ -219,6 +236,7 @@ int gettoken(FILE * source_file,char c){
                 token_text[token_counter][1]='\0';
                 ungetc(c,source_file);
                 strcpy(t_kinds[token_counter],EnumtoStr(GREATER));
+                line_info[token_counter]=line_counter;
                 token_counter++;
                 return GREATER;
             }
@@ -229,6 +247,7 @@ int gettoken(FILE * source_file,char c){
                 token_text[token_counter][1]=c;
                 token_text[token_counter][2]='\0';
                 strcpy(t_kinds[token_counter],EnumtoStr(LESS_EQ));
+                line_info[token_counter]=line_counter;
                 token_counter++;
                 return LESS_EQ;
             }
@@ -236,6 +255,7 @@ int gettoken(FILE * source_file,char c){
                 token_text[token_counter][1]='\0';
                 ungetc(c,source_file);
                 strcpy(t_kinds[token_counter],EnumtoStr(LESS));
+                line_info[token_counter]=line_counter;
                 token_counter++;
                 return LESS;
             }
@@ -246,48 +266,56 @@ int gettoken(FILE * source_file,char c){
             token_text[token_counter][0]=c;
             token_text[token_counter][1]='\0';
             strcpy(t_kinds[token_counter],EnumtoStr(LBRACE));
+            line_info[token_counter]=line_counter;
             token_counter++;
             return LBRACE;
         case '}':
             token_text[token_counter][0]=c;
             token_text[token_counter][1]='\0';
             strcpy(t_kinds[token_counter],EnumtoStr(RBRACE));
+            line_info[token_counter]=line_counter;
             token_counter++;
             return RBRACE;
         case '[':
             token_text[token_counter][0]=c;
             token_text[token_counter][1]='\0';
             strcpy(t_kinds[token_counter],EnumtoStr(LBRACKET));
+            line_info[token_counter]=line_counter;
             token_counter++;
             return LBRACKET;
         case ']':
             token_text[token_counter][0]=c;
             token_text[token_counter][1]='\0';
             strcpy(t_kinds[token_counter],EnumtoStr(RBRACKET));
+            line_info[token_counter]=line_counter;
             token_counter++;
             return RBRACKET;
         case '(':
             token_text[token_counter][0]=c;
             token_text[token_counter][1]='\0';
             strcpy(t_kinds[token_counter],EnumtoStr(LP));
+            line_info[token_counter]=line_counter;
             token_counter++;
             return LP;
         case ')':
             token_text[token_counter][0]=c;
             token_text[token_counter][1]='\0';
             strcpy(t_kinds[token_counter],EnumtoStr(RP));
+            line_info[token_counter]=line_counter;
             token_counter++;
             return RP;
         case ';':
             token_text[token_counter][0]=c;
             token_text[token_counter][1]='\0';
             strcpy(t_kinds[token_counter],EnumtoStr(SEMICOLON));
+            line_info[token_counter]=line_counter;
             token_counter++;
             return SEMICOLON;
         case '#':
             token_text[token_counter][0]=c;
             token_text[token_counter][1]='\0';
             strcpy(t_kinds[token_counter],EnumtoStr(SHARP));
+            line_info[token_counter]=line_counter;
             token_counter++;
             return SHARP;
     }
@@ -300,6 +328,7 @@ int gettoken(FILE * source_file,char c){
                 token_text[token_counter][1]=c;
                 token_text[token_counter][2]='\0';
                 strcpy(t_kinds[token_counter],EnumtoStr(AND));
+                line_info[token_counter]=line_counter;
                 token_counter++;
                 return AND;
             }
@@ -307,6 +336,7 @@ int gettoken(FILE * source_file,char c){
                 token_text[token_counter][1]='\0';
                 ungetc(c,source_file);
                 strcpy(t_kinds[token_counter],EnumtoStr(ERROR_TOKEN));
+                line_info[token_counter]=line_counter;
                 token_counter++;
                 return ERROR_TOKEN;
             }
@@ -317,6 +347,7 @@ int gettoken(FILE * source_file,char c){
                 token_text[token_counter][1]=c;
                 token_text[token_counter][2]='\0';
                 strcpy(t_kinds[token_counter],EnumtoStr(OR));
+                line_info[token_counter]=line_counter;
                 token_counter++;
                 return OR;
             }
@@ -324,6 +355,7 @@ int gettoken(FILE * source_file,char c){
                 token_text[token_counter][1]='\0';
                 ungetc(c,source_file);
                 strcpy(t_kinds[token_counter],EnumtoStr(ERROR_TOKEN));
+                line_info[token_counter]=line_counter;
                 token_counter++;
                 return ERROR_TOKEN;
             }
@@ -333,12 +365,12 @@ int gettoken(FILE * source_file,char c){
 }
 
 //The function used to scan the source file and return the message.
-int scanner(FILE * source_file){
+bool scanner(FILE * source_file){
     source_file = fopen("TestRoutine.c", "r");
     if (source_file == NULL)
     {
         printf("Error opening file\n");
-        return 0;
+        return false;
     };
     char ch;
     int t_kind;
@@ -347,7 +379,7 @@ int scanner(FILE * source_file){
         t_kind=gettoken(source_file,ch);
         if(t_kind==ERROR_TOKEN){
             printf("Error: line %d: The token is not recognized.\n",line_counter);
-            return 0;
+            return false;
         }
         else if(t_kind==LINECOMMENT){
             printf("Line comment.\n");
@@ -362,7 +394,7 @@ int scanner(FILE * source_file){
     }while(t_kind!=END_OF_FILE);
     
     fclose(source_file);
-    return 1;
+    return true;
 
 }
 
