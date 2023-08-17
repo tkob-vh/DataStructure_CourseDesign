@@ -311,6 +311,13 @@ int gettoken(FILE * source_file,char c){
             line_info[token_counter]=line_counter;
             token_counter++;
             return SEMICOLON;
+        case ',': 
+            token_text[token_counter][0]=c;
+            token_text[token_counter][1]='\0';
+            strcpy(t_kinds[token_counter],EnumtoStr(COMMA));
+            line_info[token_counter]=line_counter;
+            token_counter++;
+            return COMMA;  
         case '#':
             token_text[token_counter][0]=c;
             token_text[token_counter][1]='\0';
