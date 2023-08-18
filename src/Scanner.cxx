@@ -1,5 +1,5 @@
 /********************************************************************
-* FILE: LexicalAnalyzer.cxx
+* FILE: Scanner.cxx
 * DESCRIPTION:
 * This file is used to analyze the lexical of the source file using FSM.
 * 
@@ -10,7 +10,7 @@
 #include<stdio.h>
 #include<ctype.h>
 #include<string.h>
-#include "LexicalAnalyzer.h"
+#include "Scanner.h"
 #include "GlobalVar.h"
 
 

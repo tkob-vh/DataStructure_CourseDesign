@@ -8,9 +8,9 @@ project(Front_End_Compiler)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_subdirectory(FrontEnd)
+add_subdirectory(src)
 
-target_link_libraries(Front_End_Compiler PUBLIC FrontEnd)
+link_libraries(Front_End_Compiler PUBLIC FrontEndFunction)
 
 include_directories("${PROJECT_BINARY_DIR}/include")
                             

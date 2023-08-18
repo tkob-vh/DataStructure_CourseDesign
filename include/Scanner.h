@@ -1,5 +1,5 @@
 /********************************************************************
-* FILE: LexicalAnalyzer.h
+* FILE: Scanner.h
 * DESCRIPTION:
 * AUTHOR: yyx
 * LASTREVISED: 2021.8.14
@@ -15,7 +15,7 @@ extern int line_info[1000]; // store the line number of each token
 extern size_t line_counter; // count the line number
 extern size_t token_counter; // count the token number
 extern char Keywords[14][10];//store the main keywords
-extern int w; //store the token kind of contomparary token in SyntaxAnalyzer.c
+extern int w; //store the token kind of contomparary token in Parser.c
 extern Token_kind token_kind;
 
 
