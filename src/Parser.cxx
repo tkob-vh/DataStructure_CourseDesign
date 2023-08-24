@@ -8,8 +8,14 @@
 
 #include<string.h>
 #include "GlobalVar.h"
+//#include "Scanner.h"
 #include "Parser.h"
 #include "tree.hh"
+#include<stack>
+
+
+using std::stack;
+
 
 extern char temp_kind[20];
 extern char temp_text[20];
@@ -42,6 +48,8 @@ extern tree<std::string>::iterator statement_root;
 extern tree<std::string> expression_tree;
 extern tree<std::string>::iterator expression_root;
 
+
+//the function used to judge whether the token w is a capital keyword
 bool LookupCapitalKeywords(char* w){
     for(int i=0;i<14;i++){
         if(strcmp(w,Capital_Keywords[i])==0){
@@ -52,10 +60,127 @@ bool LookupCapitalKeywords(char* w){
 }
 
 
+//the function used to read the next token,such as ID,INT_LITERAL,etc.`
 void readtoken(){
     strcpy(w, t_kinds[token_counter1]);
     token_counter1++;
 }
+
+
+//the function used to judge whether the token w is an operator
+bool isOperator(char* w){
+    if(!strcmp(w,"PLUS")||!strcmp(w,"MINUS")||!strcmp(w,"MULTIPLY")||!strcmp(w,"DIVIDE")||!strcmp(w,"MOD")||!strcmp(w,"ASSIGN")||!strcmp(w,"EQ")||!strcmp(w,"NEQ")||!strcmp(w,"GREATER")||!strcmp(w,"LESS")||!strcmp(w,"GREATER_EQ")||!strcmp(w,"LESS_EQ")){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+
+//the function used to convert the token kind to the enum type
+Token_kind StrtoEnum(char * str){
+    if(!strcmp(str,"PLUS")){
+        return PLUS;
+    }
+    else if(!strcmp(str,"MINUS")){
+        return MINUS;
+    }
+    else if(!strcmp(str,"MULTIPLY")){
+        return MULTIPLY;
+    }
+    else if(!strcmp(str,"DIVIDE")){
+        return DIVIDE;
+    }
+    else if(!strcmp(str,"MOD")){
+        return MOD;
+    }
+    else if(!strcmp(str,"ASSIGN")){
+        return ASSIGN;
+    }
+    else if(!strcmp(str,"EQ")){
+        return EQ;
+    }
+    else if(!strcmp(str,"NEQ")){
+        return NEQ;
+    }
+    else if(!strcmp(str,"GREATER")){
+        return GREATER;
+    }
+    else if(!strcmp(str,"LESS")){
+        return LESS;
+    }
+    else if(!strcmp(str,"GREATER_EQ")){
+        return GREATER_EQ;
+    }
+    else if(!strcmp(str,"LESS_EQ")){
+        return LESS_EQ;
+    }
+    else if(!strcmp(str,"AND")){
+        return AND;
+    }
+    else if(!strcmp(str,"OR")){
+        return OR;
+    }
+}
+
+//the function used to get the priority of the operator
+int getOperatorPriority(char* w){
+    Token_kind t=StrtoEnum(w);
+    switch(t){
+        case MULTIPLY:
+        case DIVIDE:
+        case MOD:
+            return 2;
+        case PLUS:
+        case MINUS:
+            return 1;
+        case GREATER:
+        case LESS:
+        case GREATER_EQ:
+        case LESS_EQ:
+            return 0;
+        case EQ:
+        case NEQ:
+            return -1;
+        case AND:
+            return -2;
+        case OR:
+            return -3;
+        case ASSIGN:
+            return -4;
+        default:
+            return -5;//error
+    }
+}
+
+
+//Convert the token kind from enum to string
+char* EnumtoStr(int enub){
+    return TK[enub];
+}
+
+
+
+//the function used to compare the priority of two operators
+char cmpOperatorPriority(const char* w1,char* w2){
+    int p1=getOperatorPriority(w1);
+    int p2=getOperatorPriority(w2);
+    if(p1==-5||p2==-5){
+        printf("Error in line %d : the operator is not supported\n",line_info[token_counter1-1]);
+        return 'e';
+    }
+    if(p1>p2){
+        return '>';
+    }
+    else if(p1<p2){
+        return '<';
+    }
+    else{
+        return '=';
+    }
+}
+
 
 //the function used to operate the program
 tree<std::string>::iterator program(){
@@ -210,8 +335,13 @@ tree<std::string>::iterator statement_list(){
     tree<std::string>::iterator p;
     p=statement();
     if(p==NULL){//need to be modified
-        printf("Error in line %d : statement_list should be statement\n",line_info[token_counter1-1]);
-        return NULL;
+        if(errors>0){
+            printf("Error in line %d : statement_list should be statement\n",line_info[token_counter1-1]);
+            return NULL;
+        }
+        else{
+            return NULL;
+        }
     }
     else{
         tmp_tree.set_head("statement_list");
@@ -345,7 +475,83 @@ tree<std::string>::iterator statement(){
     }
 }
 
-//the function used to operate the expression
-tree<std::string>::iterator expression(){
+//the function used to operate the expression, ended with endsym,which is semicolon or RP
+//the first token of expression is already read when the function is called
+tree<std::string>::iterator expression(int endsym){
+    stack<std::string> operator_stack;
+    stack<std::string> operand_stack;
+    operator_stack.push("#");
     
+    tree<std::string> tmp_tree;
+    tree<std::string>::iterator root;
+    tree<std::string>::iterator p;
+
+    int error=0;
+    std::string t;
+    std::string t1;
+    std::string t2;
+
+   
+    while((strcmp(w,"#")||operator_stack.top().compare("#"))&&!error){
+        if(!strcmp(w,"ID")||!strcmp(w,"INT_LITERAL")||!strcmp(w,"FLOAT_LITERAL")||!strcmp(w,"CHAR_LITERAL")){
+            operand_stack.push(w);
+            readtoken();
+        }
+        else if(isOperator(w)){
+            switch(cmpOperatorPriority(operator_stack.top().c_str(),w)){
+                case '>':
+                    t2=operand_stack.top();
+                    operand_stack.pop();
+                    t1=operand_stack.top();
+                    operand_stack.pop();
+                    t=operator_stack.top();
+                    operator_stack.pop();
+                    //generate the tree   need to be modified
+                    tmp_tree.set_head(t);
+                    root = tmp_tree.begin();
+                    tmp_tree.prepend_child(root,t1);
+                    tmp_tree.append_child(root,t2);
+                    operand_stack.push(t);
+                    break;
+                case '<':
+                    operator_stack.push(w);
+                    readtoken();
+                    break;
+                case '=':
+                    t=operator_stack.top();
+                    operator_stack.pop();
+                    
+                    readtoken();
+                    break;
+                case 'e':
+                    error=1;
+                    break;
+                default:
+                    if(!strcmp(w,EnumtoStr(endsym))){
+                        strcpy("#",w);
+                    }
+                    else{
+                        error=1;
+                    }
+            }
+        }
+        else if(!strcmp(w,EnumtoStr(endsym))){
+            strcpy("#",w);
+        }
+        else{
+            error=1;
+        }
+        if(operand_stack.size()==1&&!operator_stack.top().compare("#")){
+            return root;
+        }
+        else{
+            printf("Error in line %d : expression should be expression SEMICOLON or expression RP\n",line_info[token_counter1-1]);
+            return NULL;
+        }
+        
+
+    }
+
 }
+
+

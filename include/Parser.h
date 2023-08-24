@@ -31,4 +31,4 @@ tree<std::string>::iterator local_variable_defination();
 tree<std::string>::iterator statement_list();
 tree<std::string>::iterator statement();
 tree<std::string>::iterator expression_statement();
-tree<std::string>::iterator expression();
+tree<std::string>::iterator expression(int endsym);
