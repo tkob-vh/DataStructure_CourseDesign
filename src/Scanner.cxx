@@ -11,7 +11,7 @@
 #include<ctype.h>
 #include<string.h>
 #include "Scanner.h"
-#include "GlobalVar.h"
+#include "var.h"
 
 
 //Lookup the keyword and return its token kind, else return ID

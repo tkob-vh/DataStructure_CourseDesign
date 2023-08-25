@@ -1,28 +1,3 @@
-
-//	STL-like templated tree class.
-//
-// Copyright (C) 2001-2020 Kasper Peeters <kasper@phi-sci.com>
-// Distributed under the GNU General Public License version 3.
-//
-// Special permission to use tree.hh under the conditions of a 
-// different license can be requested from the author.
-
-/** \mainpage tree.hh
-    \author   Kasper Peeters
-    \version  3.18
-    \date     13-Feb-2021
-    \see      http://tree.phi-sci.com/
-    \see      http://github.com/kpeeters/tree.hh/
-
-   The tree.hh library for C++ provides an STL-like container class
-   for n-ary trees, templated over the data stored at the
-   nodes. Various types of iterators are provided (post-order,
-   pre-order, and others). Where possible the access methods are
-   compatible with the STL or alternative algorithms are
-   available. 
-*/
-
-
 #ifndef tree_hh_
 #define tree_hh_
 

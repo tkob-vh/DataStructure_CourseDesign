@@ -7,7 +7,7 @@
 #include<stdio.h>
 #include<ctype.h>
 #include<string.h>
-#include "GlobalVar.h"
+#include "var.h"
 #include "Scanner.h"
 #include "Parser.h"
 #include "IRGenerator.h"
