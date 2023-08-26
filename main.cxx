@@ -2,7 +2,6 @@
 * FILE: main.cxx 
 * DESCRIPTION:
 * AUTHOR: yyx
-* LASTREVISED: 2021.8.14
 ********************************************************************/
 #include<stdio.h>
 #include<ctype.h>
@@ -10,7 +9,7 @@
 #include "var.h"
 #include "Scanner.h"
 #include "Parser.h"
-#include "IRGenerator.h"
+#include "IRGen.h"
 #include "tree.hh"
 
 

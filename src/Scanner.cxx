@@ -4,7 +4,6 @@
 * This file is used to analyze the lexical of the source file using FSM.
 * 
 * AUTHOR: yyx
-* LASTREVISED: 2021.8.15
 ********************************************************************/
 
 #include<stdio.h>
@@ -31,7 +30,7 @@ char* EnumtoStr(int enub){
 }
 
 
-//
+//the function used to skip the comment
 void skipcomment(int type,FILE * source_file,char c){
     if(type==LINECOMMENT){
         do{
