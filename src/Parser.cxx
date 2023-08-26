@@ -6,51 +6,11 @@
 ********************************************************************/
 
 #include<string.h>
-#include "var.h"
-#include "Parser.h"
-#include "tree.hh"
+#include "Parser.hh"
 #include<stack>
-
-
+#include "var.hh"
+#include "Scanner.hh"
 using std::stack;
-
-
-extern char temp_kind[20];
-extern char temp_text[20];
-extern int errors;
-//extern tree<std::string>::iterator root;
-extern tree<std::string> program_tree;
-extern tree<std::string>::iterator program_root;
-
-extern tree<std::string> preprocessing_list_tree;
-extern tree<std::string>::iterator preprocessing_list_root;
-
-extern tree<std::string> external_defination_list_tree;
-extern tree<std::string>::iterator external_defination_list_root;
-
-extern tree<std::string> external_variable_defination_tree;
-extern tree<std::string>::iterator external_variable_defination_root;
-
-extern tree<std::string> function_defination_tree;
-extern tree<std::string>::iterator function_defination_root;
-
-extern tree<std::string> formal_parameter_list_tree;
-extern tree<std::string>::iterator formal_parameter_list_root;
-
-extern tree<std::string> compound_statement_tree;
-extern tree<std::string>::iterator compound_statement_root;
-
-extern tree<std::string> local_variable_defination_list_tree;
-extern tree<std::string>::iterator local_variable_defination_list_root;
-
-extern tree<std::string> statement_list_tree;
-extern tree<std::string>::iterator statement_list_root;
-
-extern tree<std::string> statement_tree;
-extern tree<std::string>::iterator statement_root;
-
-extern tree<std::string> expression_tree;
-extern tree<std::string>::iterator expression_root;
 
 
 //the function used to judge whether the token w is a capital keyword ,such as INT,CHAR,etc.
@@ -135,12 +95,12 @@ Token_kind StrtoEnum(char * str){
     else if(!strcmp(str,"SHARP")){
         return SHARP;
     }
+    else{
+        return ERROR_TOKEN;
+    }
 }
 
-//Convert the token kind from enum to string
-char* EnumtoStr(int enub){
-    return TK[enub];
-}
+
 
 
 //the function used to get the number of the operator in the table
@@ -150,6 +110,7 @@ int getTableNum(const char * w){
             return i;
         }
     }
+    return -1;
 }
 
 
@@ -297,6 +258,10 @@ tree<std::string>::iterator external_defination(){
             root= function_defination();
         }
         if(root!=NULL)  return root;
+        else{
+            printf("Error in line %d : the external defination is illegal\n",line_info[token_counter1-1]);
+            return NULL;
+        }
     }
 }
 
@@ -725,7 +690,7 @@ tree<std::string>::iterator expression(int endsym){
                     break;
                 default:
                     if(!strcmp(w,EnumtoStr(endsym))){
-                        strcpy("#",w);
+                        strcpy(w,"#");
                     }
                     else{
                         error=1;
@@ -733,7 +698,7 @@ tree<std::string>::iterator expression(int endsym){
             }
         }
         else if(!strcmp(w,EnumtoStr(endsym))){
-            strcpy("#",w);
+            strcpy(w,"#"); 
         }
         else{
             error=1;
@@ -744,11 +709,9 @@ tree<std::string>::iterator expression(int endsym){
         else{
             printf("Error in line %d : expression should be expression SEMICOLON or expression RP\n",line_info[token_counter1-1]);
             return NULL;
-        }
-        
-
+        }  
     }
-
+    return NULL;
 }
 
 

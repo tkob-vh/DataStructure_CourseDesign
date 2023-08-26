@@ -9,8 +9,8 @@
 #include<stdio.h>
 #include<ctype.h>
 #include<string.h>
-#include "Scanner.h"
-#include "var.h"
+#include "Scanner.hh"
+#include "var.hh"
 
 
 //Lookup the keyword and return its token kind, else return ID
@@ -368,11 +368,15 @@ int gettoken(FILE * source_file,char c){
         }
 
     }
+    printf("Error: line %d: The token is not recognized.\n",line_counter);
+    return ERROR_TOKEN;
 }
 
+
 //The function used to scan the source file and return the message.
-bool scanner(FILE * source_file){
-    source_file = fopen("TestRoutine.c", "r");
+bool scanner(FILE * source_file,char * filename){
+
+    source_file = fopen(filename, "r");
     if (source_file == NULL)
     {
         printf("Error opening file\n");
@@ -403,4 +407,5 @@ bool scanner(FILE * source_file){
     return true;
 
 }
+
 

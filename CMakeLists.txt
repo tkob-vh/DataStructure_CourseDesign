@@ -2,18 +2,20 @@
 cmake_minimum_required(VERSION 3.25.1)
 
 #Set the project name
-project(Front_End_Compiler)
+project(Front_End_Compiler LANGUAGES CXX) 
 
 #Set the CXX standard to use
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 11) 
+
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_subdirectory(src)
+include_directories("${PROJECT_SOURCE_DIR}/include")
+include_directories("${PROJECT_SOURCE_DIR}/src")
+include_directories("${PROJECT_SOURCE_DIR}/test")
+
 
 add_executable(Front_End_Compiler main.cxx)
 
-target_link_libraries(Front_End_Compiler PUBLIC FrontEndFunction)
+add_subdirectory(src)                           
 
-target_include_directories(Front_End_Compiler PUBLIC "${PROJECT_BINARY_DIR}/include")
-                            
-
+target_link_libraries(Front_End_Compiler PUBLIC SRC)

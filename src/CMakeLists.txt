@@ -1,2 +1,1 @@
-
-add_library(FrontEndFunction STATIC ${PROJECT_BINARY_DIR}/src/)
+add_library(SRC STATIC "${PROJECT_SOURCE_DIR}/src/Scanner.cxx" "${PROJECT_SOURCE_DIR}/src/Parser.cxx" "${PROJECT_SOURCE_DIR}/src/Parser.cxx" )

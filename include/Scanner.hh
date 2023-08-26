@@ -15,10 +15,12 @@ extern int line_info[1000]; // store the line number of each token
 extern size_t line_counter; // count the line number
 extern size_t token_counter; // count the token number
 extern char Keywords[14][10];//store the main keywords
-extern Token_kind token_kind;
+extern char TK[47][15];
+
 
 
 int LookupKeyword(int token_num);
 char* EnumtoStr(int enub);
+void skipcomment(int type,FILE * source_file,char c);
 int gettoken(FILE * source_file,char c);
-bool scanner(FILE * source_file);
+bool scanner(FILE * source_file,char * filename);
