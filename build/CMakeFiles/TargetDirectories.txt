@@ -1,6 +1,0 @@
-/home/yyx/DataStructureExperiment/build/CMakeFiles/Front_End_Compiler.dir
-/home/yyx/DataStructureExperiment/build/CMakeFiles/edit_cache.dir
-/home/yyx/DataStructureExperiment/build/CMakeFiles/rebuild_cache.dir
-/home/yyx/DataStructureExperiment/build/src/CMakeFiles/SRC.dir
-/home/yyx/DataStructureExperiment/build/src/CMakeFiles/edit_cache.dir
-/home/yyx/DataStructureExperiment/build/src/CMakeFiles/rebuild_cache.dir
