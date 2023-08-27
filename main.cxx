@@ -95,17 +95,19 @@ tree<std::string>::iterator expression_root;
 
 int main(){
     char filename[100];
+    char filename1[100];
     FILE *fp;
-
-    printf("Please input the filename: \n");
-    scanf("%s",filename);
-    
+    // strcpy(filename,"./test/");
+    // printf("Please input the filename: \n");
+    // scanf("%s",filename1);
+    // strcat(filename,filename1);
+    strcpy(filename,"./test/TestRoutine.cxx");
     //lexical analysis
     scanner(fp,filename);
 
     //syntax analysis
-    program_root=program();
-    treePrint();
+    // program_root=program();
+    // treePrint();
     //intermediate code generation
     //...
 

@@ -9,6 +9,7 @@
 #include<stdio.h>
 #include<ctype.h>
 #include<string.h>
+#include<time.h>
 #include "Scanner.hh"
 #include "var.hh"
 
@@ -16,7 +17,7 @@
 //Lookup the keyword and return its token kind, else return ID
 int LookupKeyword(int token_num){
     int i;
-    for(i=0;i<10;i++){
+    for(i=0;i<14;i++){
         if(strcmp(token_text[token_num],Keywords[i])==0){
             return i+5;
         }
@@ -41,6 +42,9 @@ void skipcomment(int type,FILE * source_file,char c){
     else if(type==BLOCKCOMMENT){
         do{
             c=fgetc(source_file);
+            if(c=='\n'){//count the line number in block comment.  I have forgot this in the first version.
+                line_counter++;
+            }
         }while(c!='*');
         c=fgetc(source_file);
         if(c!='/'){
@@ -75,7 +79,7 @@ int gettoken(FILE * source_file,char c){
         do{
             token_text[token_counter][i++]=c;
             c=fgetc(source_file);
-        }while(isalpha(c)||isdigit(c)||c=='_');
+        }while(isalpha(c)||isdigit(c)||c=='_'||c=='.');
         ungetc(c,source_file);
         token_text[token_counter][i]='\0';
         int t=LookupKeyword(token_counter);
@@ -125,6 +129,7 @@ int gettoken(FILE * source_file,char c){
             return ERROR_TOKEN;
         }
         strcpy(t_kinds[token_counter-1],EnumtoStr(CHAR_LITERAL));
+        line_info[token_counter-1]=line_counter;
         return CHAR_LITERAL;
     }
  
@@ -158,6 +163,7 @@ int gettoken(FILE * source_file,char c){
             c=fgetc(source_file);
             if(c=='/'){
                 skipcomment(LINECOMMENT,source_file,c);
+
                 return LINECOMMENT;
             }
             else if(c=='*'){
@@ -384,6 +390,7 @@ bool scanner(FILE * source_file,char * filename){
     };
     char ch;
     int t_kind;
+    printf("Here is the lexical analysis of the source file:\n\n\n");
     printf("Lexeme Kind\t\tLexeme Value\n");
     do{
         t_kind=gettoken(source_file,ch);
@@ -392,18 +399,42 @@ bool scanner(FILE * source_file,char * filename){
             return false;
         }
         else if(t_kind==LINECOMMENT){
-            printf("Line comment.\n");
+            printf("-------Line comment.-------\n");
         }
         else if(t_kind==BLOCKCOMMENT){
-            printf("Block comment.\n");
+            printf("-------Block comment.-------\n");
         }
         else{
-            printf("%s\t\t%s\n",t_kinds[token_counter-1],token_text[token_counter-1]);
+            printf("%-10s\t\t%s\n",t_kinds[token_counter-1],token_text[token_counter-1]);
         }
 
     }while(t_kind!=END_OF_FILE);
     
+    
+    
+    FILE * output_file;
+    output_file = fopen("./out/scanner.txt", "w");
+    if (output_file == NULL)
+    {
+        printf("Error opening file\n");
+        return false;
+    };
+    time_t t;
+    time(&t);
+    fprintf(output_file,"TIME: %s\n",ctime(&t));
+    fprintf(output_file,"Here is the lexical analysis of the source file:\n\n\n");
+    fprintf(output_file,"Line Number\t\t\tLexeme Kind\t\t\t\tLexeme Value\n");
+    for(int i=0;i<token_counter;i++){
+        fprintf(output_file,"%10d\t\t\t%-15s\t\t\t%s\n",line_info[i],t_kinds[i],token_text[i]);
+    }
+    fclose(output_file);
+
+
+    
+    
     fclose(source_file);
+
+    printf("\n\n\n");
     return true;
 
 }
