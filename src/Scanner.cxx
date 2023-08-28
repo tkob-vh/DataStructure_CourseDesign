@@ -96,7 +96,7 @@ int gettoken(FILE * source_file,char c){
         do{
             token_text[token_counter][i++]=c;
             c=fgetc(source_file);
-        }while(isdigit(c)||c=='.'); //without considering 0x form such as 0x123,and suffix form such as 123L
+        }while(isdigit(c)||c=='.'||c=='x'); //without considering  suffix form such as 123L
         ungetc(c,source_file);
         token_text[token_counter][i]='\0';
         token_counter++;
