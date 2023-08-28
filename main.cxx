@@ -90,12 +90,12 @@ tree<std::string>::iterator statement_root;
 tree<std::string> expression_tree;
 tree<std::string>::iterator expression_root;
 
-
+tree<std::string> empty_tree;
 
 
 int main(){
     char filename[100];
-    strcpy(filename,"./test/basic.cxx");
+    strcpy(filename,"/home/yyx/DataStructureExperiment/test/basic.cxx");
 
 
     FILE *fp;

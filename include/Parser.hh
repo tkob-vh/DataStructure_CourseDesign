@@ -60,7 +60,7 @@ extern tree<std::string>::iterator statement_root;
 extern tree<std::string> expression_tree;
 extern tree<std::string>::iterator expression_root;
 
-
+extern tree<std::string> empty_tree;
 
 bool LookupCapitalKeywords(char* w);
 void readtoken();
@@ -70,19 +70,19 @@ int getTableNum(const char * w);
 char getOperatorPriority(const char* w1,char* w2);
 
 tree<std::string>::iterator program();
-tree<std::string>::iterator preprocessing_list();
-tree<std::string>::iterator preprocessing();
-tree<std::string>::iterator external_defination_list();
-tree<std::string>::iterator external_defination();
-tree<std::string>::iterator external_variable_defination();
-tree<std::string>::iterator function_defination();
-tree<std::string>::iterator formal_parameter_list();
-tree<std::string>::iterator formal_parameter();
-tree<std::string>::iterator compound_statement();
-tree<std::string>::iterator local_variable_defination_list();
-tree<std::string>::iterator local_variable_defination();
-tree<std::string>::iterator statement_list();
-tree<std::string>::iterator statement();
-tree<std::string>::iterator expression(int endsym);
+tree<std::string> preprocessing_list();
+tree<std::string> preprocessing();
+tree<std::string> external_defination_list();
+tree<std::string> external_defination();
+tree<std::string> external_variable_defination();
+tree<std::string> function_defination();
+tree<std::string> formal_parameter_list();
+tree<std::string> formal_parameter();
+tree<std::string> compound_statement();
+tree<std::string> local_variable_defination_list();
+tree<std::string> local_variable_defination();
+tree<std::string> statement_list();
+tree<std::string> statement();
+tree<std::string> expression(int endsym);
 void treePrint();
 

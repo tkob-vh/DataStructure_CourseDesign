@@ -134,15 +134,10 @@ tree<std::string>::iterator program(){
     tree<std::string>::iterator root;
     readtoken(); 
     root=program_tree.set_head("program");
-    printf("the first token is %s\n",w);
-    preprocessing_list_root=preprocessing_list();
-    if(preprocessing_list_root==NULL){
-        printf("Error in line %d : the first token of the program is not a preprocessing_list\n",line_info[token_counter1-1]);
-        return NULL;
-    }
-    program_tree.append_child(root,preprocessing_list_root);
-    external_defination_list_root = external_defination_list();
-    program_tree.append_child(root,external_defination_list_root);
+    preprocessing_list_tree=preprocessing_list();
+    program_tree.move_in_below(root,preprocessing_list_tree);
+    // external_defination_list_tree=external_defination_list();
+    // program_tree.move_in_below(root,external_defination_list_tree);
     return root;       
 }
 
@@ -150,37 +145,40 @@ tree<std::string>::iterator program(){
 //the function used to operate the preprocessing_list
 //the first token of preprocessing_list(#) is already read when the function is called
 //the subsequent token(# or else) is read when the function returns
-tree<std::string>::iterator preprocessing_list(){
-    printf("executing preprocessing_list()...\n");
+tree<std::string> preprocessing_list(){
     if(strcmp(w,"SHARP")){
-        return NULL;
+        return empty_tree;
     }
     tree<std::string> tmp_tree;
     tree<std::string>::iterator root;
-    tree<std::string>::iterator p;
+    tree<std::string> p;
+    tree<std::string> q;
     root=tmp_tree.set_head("preprocessing_list");
     p=preprocessing();
+    tmp_tree.move_in_below(root,p);
+  
+    q=preprocessing_list();
+    // printf("\n\nprint the preprocessing_list\n\n");
+    // for(tree<std::string>::iterator it=q.begin();it!=q.end();++it){
+    //     printf("%s\n",(*it).c_str());
+    // }
+    tmp_tree.move_in_below(root,q);
     
-    tmp_tree.append_child(root,p);
-    for(tree<std::string>::iterator it=tmp_tree.begin();it!=tmp_tree.end();++it){
-        printf("%s\n",(*it).c_str());
-    }
-    tmp_tree.append_child(root,preprocessing_list());
-    preprocessing_list_tree=tmp_tree;
-    root=preprocessing_list_tree.begin();
-    return root;
+    // printf("\n\nprint the preprocessing_list_tree\n\n");
+    // for(tree<std::string>::iterator it=tmp_tree.begin();it!=tmp_tree.end();++it){
+    //     printf("%s\n",(*it).c_str());
+    // }
+    return tmp_tree;
 }
 
 //the function used to operate the preprocessing
 //the first token of preprocessing is already read when the function is called
-tree<std::string>::iterator preprocessing(){
-    printf("executing preprocessing()...\n");
+tree<std::string> preprocessing(){
     tree<std::string> tmp_tree;
     tree<std::string>::iterator root;
     root=tmp_tree.set_head("preprocessing");
     readtoken();
     if(!strcmp(w,"INCLUDE")){
-        printf("recoginzing #include\n");
         tmp_tree.append_child(root,"#include");
         readtoken();
         if(!strcmp(w,"LESS")){
@@ -190,6 +188,7 @@ tree<std::string>::iterator preprocessing(){
             strcat(temp_kind,">");
             tmp_tree.append_child(root,temp_kind);
             readtoken();
+            readtoken();
         }
         else if(!strcmp(w,"DOUBLE_QUOTE")){
             strcpy(temp_kind,"\"");
@@ -198,26 +197,26 @@ tree<std::string>::iterator preprocessing(){
             strcat(temp_kind,"\"");
             tmp_tree.append_child(root,temp_kind);
             readtoken();
+            readtoken();
         }
         else{
             printf("Error in line %d : the second token of the preprocessing is not a < or a \" \n",line_info[token_counter1-1]);
-            return NULL;
+            return empty_tree;
         }
     }
     else if(!strcmp(w,"DEFINE")){
-        printf("recoginzing #define\n");
         tmp_tree.append_child(root,"#define");
         readtoken();
         if(strcmp(w,"ID")){
             printf("Error in line %d : the second token of the preprocessing is not an identifier \n",line_info[token_counter1-1]);
-            return NULL;
+            return empty_tree;
         }
         else{
             tmp_tree.append_child(root,token_text[token_counter1-1]);
             readtoken();
             if(strcmp(w,"INT_LITERAL") && strcmp(w,"FLOAT_LITERAL") && strcmp(w,"CHAR_LITERAL")){
                 printf("Error in line %d : the third token of the preprocessing is not a literal \n",line_info[token_counter1-1]);
-                return NULL;
+                return empty_tree;
             }
             else{
                 tmp_tree.append_child(root,token_text[token_counter1-1]);
@@ -227,60 +226,66 @@ tree<std::string>::iterator preprocessing(){
     }
     else{
         printf("Error in line %d : the first token of the preprocessing is not a # \n",line_info[token_counter1-1]);
-        return NULL;
+        return empty_tree;
     }
-    printf("have executed the preprocessing()...\n");
-    for(tree<std::string>::iterator it=tmp_tree.begin();it!=tmp_tree.end();++it){
-        printf("%s\n",(*it).c_str());
-    }
-    return root;
+    // for(tree<std::string>::iterator it=tmp_tree.begin();it!=tmp_tree.end();++it){
+    //     printf("%s\n",(*it).c_str());
+    // }
+    return tmp_tree;
 }
 
 
 //the function used to operate the external_defination_list 
 //the first token of external_defination_list is already read when the function is called
-tree<std::string>::iterator external_defination_list(){
+tree<std::string> external_defination_list(){
     if(!strcmp(w,"END_OF_FILE")){   
-        return NULL;
+        return empty_tree;
     }
+    tree<std::string> p;
+    tree<std::string> q;
     tree<std::string>::iterator root;
     tree<std::string> tmp_tree;
     
     root=tmp_tree.set_head("external_defination_list");
-    tmp_tree.append_child(root,external_defination());
-    tmp_tree.append_child(root,external_defination_list());
-    external_defination_list_tree=tmp_tree;
-    return root;
+    // tmp_tree.append_child(root,external_defination());
+    // tmp_tree.append_child(root,external_defination_list());
+    p=external_defination();
+    q=external_defination_list();
+    tmp_tree.move_in_below(root,p);
+    tmp_tree.move_in_below(root,q);
+
+    return tmp_tree;
 }
 
 //the function used to operate the external_defination
 //the first token of external_defination is already read when the function is called
 //when the function returns,the last token of external_defination is already read,while the subsequent token is not read
-tree<std::string>::iterator external_defination(){
+tree<std::string> external_defination(){
     tree<std::string>::iterator root;
+    tree<std::string> tmp_tree;
     if(!LookupCapitalKeywords(w)){
         printf("Error in line %d : the first token of the external defination is not a keyword\n",line_info[token_counter1-1]);
-        return NULL;
+        return empty_tree;
     }
     else{   
         strcpy(temp_kind,w);
         readtoken();
         if(strcmp(w,"ID")){
             printf("Error in line %d : the second token of the external defination is not an identifier\n",line_info[token_counter1-1]);
-            return NULL;
+            return empty_tree;
         }
         strcpy(temp_text,token_text[token_counter1-1]);
         readtoken();
         if(strcmp(w,"LP")){
-            root=external_variable_defination();
+            tmp_tree=external_variable_defination();
         }
         else{
-            root= function_defination();
+            tmp_tree = function_defination();
         }
-        if(root!=NULL)  return root;
+        if(!tmp_tree.empty())  return tmp_tree;
         else{
             printf("Error in line %d : the external defination is illegal\n",line_info[token_counter1-1]);
-            return NULL;
+            return empty_tree;
         }
     }
 }
@@ -289,7 +294,7 @@ tree<std::string>::iterator external_defination(){
 
 //the function used to operate the external_variable_defination
 //the variable type and the variable name are already read when the function is called, and the COMMA or SEMICOLON is read, too.
-tree<std::string>::iterator external_variable_defination(){
+tree<std::string> external_variable_defination(){
     tree<std::string>::iterator root;
     tree<std::string>::iterator p;
     tree<std::string>::iterator q;
@@ -300,18 +305,19 @@ tree<std::string>::iterator external_variable_defination(){
     while(1){
         if(strcmp(w,"COMMA") && strcmp(w,"SEMICOLON")){
             printf("Error in line %d : undefined token in external_variable_defination\n",line_info[token_counter1-1]);
-            return NULL;
+            return empty_tree;
         }
         else if(!strcmp(w,"SEMICOLON")){
             readtoken();
-            return root;
+            printf("hhh");
+            return external_variable_defination_tree;
         }
         else{
             readtoken();
             if(strcmp(w,"ID")){
                 printf("Error in line %d : not an identifier in external_variable_defination\n",line_info[token_counter1-1]);
                 external_variable_defination_tree.clear();
-                return NULL;
+                return empty_tree;
             }
             else{
                 q=external_variable_defination_tree.append_child(p,"external_variable_list");
@@ -326,27 +332,32 @@ tree<std::string>::iterator external_variable_defination(){
 
 //the function used to operate the function_defination
 //the return type, the function name and the LP are already read when the function is called
-tree<std::string>::iterator function_defination(){
+tree<std::string> function_defination(){
     tree<std::string>::iterator root;
     tree<std::string>::iterator p;
     tree<std::string>::iterator q;
+    tree<std::string> m;
+    tree<std::string> n;
     root=function_defination_tree.set_head("function_defination");
     function_defination_tree.append_child(root,temp_kind);
     q=function_defination_tree.append_child(root,temp_text);
-    function_defination_tree.append_child(q,formal_parameter_list());
+    m=formal_parameter_list();
+    function_defination_tree.move_in_below(q,m);
+    // function_defination_tree.append_child(q,formal_parameter_list());
     readtoken();
     if(!strcmp(w,"SEMICONLON")){
         function_defination_tree.append_child(root,"function_prototype_declaration");
-        return root;
+        return function_defination_tree;
     }
     else if(!strcmp(w,"LBRACE")){
-        function_defination_tree.append_child(root,compound_statement()); 
-        return root;
+        n=compound_statement();
+        function_defination_tree.move_in_below(root,n);
+        return function_defination_tree;
     }
     else{
         printf("Error in line %d : function_defination should be formal_parameter_list SEMICOLON or compound_statement\n",line_info[token_counter1-1]);
         function_defination_tree.clear();
-        return NULL;
+        return empty_tree;
     }
 }
 
@@ -354,53 +365,58 @@ tree<std::string>::iterator function_defination(){
 //the function used to operate the formal_parameter_list
 //the LP is already read when the function is called
 //the RP is read when the function returns
-tree<std::string>::iterator formal_parameter_list(){
+tree<std::string> formal_parameter_list(){
     tree<std::string> tmp_tree;
     tree<std::string>::iterator root;
+    tree<std::string> p;
+    tree<std::string> q;
     readtoken();
     if(!strcmp(w,"RP")){
-        return NULL;
+        return empty_tree;
     }
     else{
         root=tmp_tree.set_head("formal_parameter_list");
-        tmp_tree.append_child(root,formal_parameter());
-        tmp_tree.append_child(root,formal_parameter_list());
-        formal_parameter_list_tree=tmp_tree;
-        return root;
+        p=formal_parameter();
+        tmp_tree.move_in_below(root,p);
+        //tmp_tree.append_child(root,formal_parameter());
+        q=formal_parameter_list();
+        tmp_tree.move_in_below(root,q);
+        //tmp_tree.append_child(root,formal_parameter_list());
+        return tmp_tree;
     }
 }
 
 //the function used to operate the formal_parameter
 //the formal parameter type has already been read when the function is called 
 //the subsquent parameter type or RP is read when the function returns
-tree<std::string>::iterator formal_parameter(){
+tree<std::string> formal_parameter(){
     tree<std::string> tmp_tree;
     tree<std::string>::iterator root;
     root=tmp_tree.set_head("formal_parameter");
     if(!LookupCapitalKeywords(w)){
         printf("Error in line %d :the type of the formal parameter is illegal \n",line_info[token_counter1-1]);
-        return NULL;
+        return empty_tree;
     }
     else{
         tmp_tree.append_child(root,w);
         readtoken();
         if(strcmp(w,"ID")){
             printf("Error in line %d :the name of the formal parameter is illegal \n",line_info[token_counter1-1]);
-            return NULL;
+            return empty_tree;
         }
         else{
             tmp_tree.append_child(root,token_text[token_counter1-1]);
             readtoken();
             if(!strcmp(w,"COMMA")){
                 readtoken();
-                return root;
+                return tmp_tree;
             }
             else if(!strcmp(w,"RP")){
-                return root;
+                return tmp_tree;
             }
             else{
                 printf("Error in line %d :undefined token in the formal parameter list\n",line_info[token_counter1-1]);
-                return NULL;
+                return empty_tree;
             }
         }
     }
@@ -410,49 +426,57 @@ tree<std::string>::iterator formal_parameter(){
 //the function used to operate the compound_statement
 //the LBRACE is already read when the function is called
 //the RBRACE and the next token are read when the function returns
-tree<std::string>::iterator compound_statement(){
+tree<std::string> compound_statement(){
     tree<std::string>::iterator root;
     tree<std::string>::iterator p;
     tree<std::string>::iterator q;
     root=compound_statement_tree.set_head("compound_statement");
     readtoken();
     if(LookupCapitalKeywords(w)){
-        local_variable_defination_list_root=local_variable_defination_list();
-        compound_statement_tree.append_child(root,local_variable_defination_list_root);
+        local_variable_defination_list_tree=local_variable_defination_list();
+        compound_statement_tree.move_in_below(root,local_variable_defination_list_tree);
+        //compound_statement_tree.append_child(root,local_variable_defination_list_root);
     }
-    statement_list_root=statement_list();
-    compound_statement_tree.append_child(root,statement_list_root);
+    statement_list_tree=statement_list();
+    compound_statement_tree.move_in_below(root,statement_list_tree);
+    //compound_statement_tree.append_child(root,statement_list_root);
     if(strcmp(w,"RBRACE")){
         printf("Error in line %d : the end of the compound statement is not a RBRACE \n",line_info[token_counter1-1]);
         compound_statement_tree.clear();
-        return NULL;
+        return empty_tree;
     }
     readtoken();
-    return root;
+    return compound_statement_tree;
 }
 
 
 //the function used to operate the local_variable_defination_list
 //the first token (ie. the type) of local_variable_defination_list is already read when the function is called
 //the subsequent token is read when the function returns
-tree<std::string>::iterator local_variable_defination_list(){
+tree<std::string> local_variable_defination_list(){
     if(!LookupCapitalKeywords(w)){
-        return NULL;
+        return empty_tree;
     }
     tree<std::string> tmp_tree;
+    tree<std::string> p;
+    tree<std::string> q;
     tree<std::string>::iterator root;
+
     root=tmp_tree.set_head("local_variable_defination_list");
-    tmp_tree.append_child(root,local_variable_defination());
-    tmp_tree.append_child(root,local_variable_defination_list());
-    local_variable_defination_list_tree=tmp_tree;
-    return root;
+    p=local_variable_defination();
+    tmp_tree.move_in_below(root,p);
+    q=local_variable_defination_list();
+    tmp_tree.move_in_below(root,q);
+    // tmp_tree.append_child(root,local_variable_defination());
+    // tmp_tree.append_child(root,local_variable_defination_list());
+    return tmp_tree;
 }
 
 
 //the function used to operate the local_variable_defination
 //the first token (ie. the type) of local_variable_defination is already read when the function is called
 //the SEMICOLON and the subsequent token are read when the function returns
-tree<std::string>::iterator local_variable_defination(){
+tree<std::string> local_variable_defination(){
     tree<std::string> tmp_tree;
     tree<std::string>::iterator root;
     tree<std::string>::iterator p;
@@ -462,7 +486,7 @@ tree<std::string>::iterator local_variable_defination(){
     readtoken();
     if(strcmp(w,"ID")){
         printf("Error in line %d : the name of the local variable is illegal \n",line_info[token_counter1-1]);
-        return NULL;
+        return empty_tree;
     }
     else{
         p=tmp_tree.append_child(root,"local_variable_list");
@@ -471,17 +495,17 @@ tree<std::string>::iterator local_variable_defination(){
         while(1){
             if(strcmp(w,"COMMA") && strcmp(w,"SEMICOLON")){
                 printf("Error in line %d : undefined token in local_variable_defination\n",line_info[token_counter1-1]);
-                return NULL;
+                return empty_tree;
             }
             else if(!strcmp(w,"SEMICOLON")){
                 readtoken();
-                return root;
+                return tmp_tree;
             }
             else{
                 readtoken();
                 if(strcmp(w,"ID")){
                     printf("Error in line %d : not an identifier in local_variable_defination\n",line_info[token_counter1-1]);
-                    return NULL;
+                    return empty_tree;
                 }
                 else{
                     q=tmp_tree.append_child(p,"local_variable_list");
@@ -500,167 +524,185 @@ tree<std::string>::iterator local_variable_defination(){
 //the function used to operate the statement_list
 //the first token of statement_list is already read when the function is called
 //the subsequent token is read when the function returns
-tree<std::string>::iterator statement_list(){
+tree<std::string> statement_list(){
     tree<std::string> tmp_tree;
     tree<std::string>::iterator root=NULL;
-    tree<std::string>::iterator p;
+    tree<std::string> p;
+    tree<std::string> q;
     p=statement();
-    if(p==NULL){
+    if(p.empty()){
         if(errors>0){
             printf("Error in line %d : statement_list should be statement\n",line_info[token_counter1-1]);
-            return NULL;
+            return empty_tree;
         }
         else{
-            return NULL;
+            return empty_tree;
         }
     }
     else{
         root=tmp_tree.set_head("statement_list");
-        tmp_tree.append_child(root,p);
-        tmp_tree.append_child(root,statement_list());
-        statement_root=p;
-        statement_list_tree=tmp_tree;
-        return root;
+        tmp_tree.move_in_below(root,p);
+        //tmp_tree.append_child(root,p);
+        q=statement_list();
+        tmp_tree.move_in_below(root,q);
+        //tmp_tree.append_child(root,statement_list());
+        // statement_root=p;
+        // statement_list_tree=tmp_tree;
+        return tmp_tree;
     }
 
 }
 
 //the function used to operate the statement
 //the first token of statement is already read when the function is called
-tree<std::string>::iterator statement(){
+tree<std::string> statement(){
     tree<std::string>::iterator root;
-    tree<std::string>::iterator p;
-    tree<std::string>::iterator q;
+    tree<std::string> p;
+    tree<std::string> q;
     tree<std::string>::iterator r;
     if(!strcmp(w,"IF")){
         readtoken();
         if(strcmp(w,"LP")){
             printf("Error in line %d : the if condition does not begins with LP \n",line_info[token_counter1-1]);
-            return NULL;
+            return empty_tree;
         }
-        expression_root=expression(RP);//the if condition ,ended with RP
+        expression_tree=expression(RP);//the if condition ,ended with RP
         readtoken();//read the { or the statement
         p=statement_list();//the if statement(maybe compound_statement)
         if(!strcmp(w,"ELSE")){
             readtoken();//read the { or the statement
             q=statement_list();//the else statement(maybe compound_statement)
             root=statement_tree.set_head("if-else_statement");
-            statement_tree.append_child(root,expression_root);
-            statement_tree.append_child(root,p);
-            statement_tree.append_child(root,q);
-            return root;
+            statement_tree.move_in_below(root,expression_tree);
+            statement_tree.move_in_below(root,p);
+            statement_tree.move_in_below(root,q);
+            // statement_tree.append_child(root,expression_root);
+            // statement_tree.append_child(root,p);
+            // statement_tree.append_child(root,q);
+            return statement_tree;
         }
         else{
             root=statement_tree.set_head("if_statement");
-            statement_tree.append_child(root,expression_root);
-            statement_tree.append_child(root,p);
-            return root;
+            statement_tree.move_in_below(root,expression_tree);
+            statement_tree.move_in_below(root,p);
+            // statement_tree.append_child(root,expression_root);
+            // statement_tree.append_child(root,p);
+            return statement_tree;
         }
     }
     else if(!strcmp(w,"LBRACE")){
-        root=compound_statement();
-        return root;
+        statement_tree=compound_statement();
+        return statement_tree;
     }
     else if(!strcmp(w,"WHILE")){
         readtoken();
         if(strcmp(w,"LP")){
             printf("Error in line %d : statement should be WHILE LP expression RP statement\n",line_info[token_counter1-1]);
-            return NULL;
+            return empty_tree;
         }
-        expression_root=expression(RP);//the while condition ,ended with RP
+        expression_tree=expression(RP);//the while condition ,ended with RP
         readtoken();//read the { or the statement
         p=statement_list();//the while statement(maybe compound_statement)
         root=statement_tree.set_head("while_statement");
-        statement_tree.append_child(root,expression_root);
-        statement_tree.append_child(root,p);
-        return root;
+        statement_tree.move_in_below(root,expression_tree);
+        statement_tree.move_in_below(root,p);
+        // statement_tree.append_child(root,expression_root);
+        // statement_tree.append_child(root,p);
+        return statement_tree;
     }
     else if(!strcmp(w,"FOR")){
         readtoken();
         if(strcmp(w,"LP")){
             printf("Error in line %d : statement should be FOR LP expression SEMICOLON expression SEMICOLON expression RP statement\n",line_info[token_counter1-1]);
-            return NULL;
+            return empty_tree;
         }
         readtoken();
         root=statement_tree.set_head("for_statement");
-        p=statement_tree.append_child(root,"for_condition_statement");
-        statement_tree.append_child(p,expression(SEMICOLON));
-        statement_tree.append_child(p,expression(SEMICOLON));
-        statement_tree.append_child(p,expression(RP));
+        tree<std::string>::iterator m;
+        m=statement_tree.append_child(root,"for_condition_statement");
+        p=expression(SEMICOLON);
+        statement_tree.move_in_below(m,p);
+        p=expression(SEMICOLON);
+        statement_tree.move_in_below(m,p);
+        p=expression(RP);
+        statement_tree.move_in_below(m,p);
+       
         readtoken();//read the { or the statement
         q=statement_list();//the for statement(maybe compound_statement)
-        statement_tree.append_child(root,q);
-        return root;
+        statement_tree.move_in_below(root,q);
+        //statement_tree.append_child(root,q);
+        return statement_tree;
     }
     else if(!strcmp(w,"RETURN")){
         readtoken();
         if(strcmp(w,"SEMICOLON")){
-            expression_root=expression(SEMICOLON);
+            expression_tree=expression(SEMICOLON);
             // if(strcmp(w,"SEMICOLON")){
             //     printf("Error in line %d : return statement should end up with SEMICOLON\n",line_info[token_counter1-1]);
             //     return NULL;
             // }
             root=statement_tree.set_head("return_statement");
-            statement_tree.append_child(root,expression_root);
+            statement_tree.move_in_below(root,expression_tree);
+            //statement_tree.append_child(root,expression_root);
             readtoken();
-            return root;
+            return statement_tree;
         }
         else{
             root=statement_tree.set_head("return_statement");
             readtoken();
-            return root;
+            return statement_tree;
         }
     }
     else if(!strcmp(w,"BREAK")){
         readtoken();
         if(strcmp(w,"SEMICOLON")){
             printf("Error in line %d : statement should be BREAK SEMICOLON\n",line_info[token_counter1-1]);
-            return NULL;
+            return empty_tree;
         }
         root=statement_tree.set_head("break_statement");
         readtoken();
-        return root;
+        return statement_tree;
     }
     else if(!strcmp(w,"CONTINUE")){
         readtoken();
         if(strcmp(w,"SEMICOLON")){
             printf("Error in line %d : statement should be CONTINUE SEMICOLON\n",line_info[token_counter1-1]);
-            return NULL;
+            return empty_tree;
         }
         root=statement_tree.set_head("continue_statement");
         readtoken();
-        return root;
+        return statement_tree;
     }
     else if(!strcmp(w,"LP")){
-        root=expression(RP);
+        statement_tree=expression(RP);
         readtoken();
-        return root;
+        return statement_tree;
     }
     else if(!strcmp(w,"ID")){
-        root=expression(SEMICOLON);
+        statement_tree=expression(SEMICOLON);
         readtoken();
-        return root;
+        return statement_tree;
     }
     else if(!(strcmp(w,"INT_LITERAL")&&strcmp(w,"FLOAT_LITERAL")&&strcmp(w,"CHAR_LITERAL"))){
-        root=expression(SEMICOLON);
+        statement_tree=expression(SEMICOLON);
         readtoken();
-        return root;
+        return statement_tree;
     }
     else if(!strcmp(w,"RBRACE")){
         readtoken();
-        return NULL;
+        return empty_tree;
     }
     else{
         errors++;
         printf("Error in line %d : undefined token in the statement\n",line_info[token_counter1-1]);
-        return NULL;
+        return empty_tree;
     }
 }
 
 //the function used to operate the expression, ended with endsym,which is semicolon or RP
 //the first token of expression is already read when the function is called
 //the subsequent token is not read when the function returns
-tree<std::string>::iterator expression(int endsym){
+tree<std::string> expression(int endsym){
     stack<std::string> operator_stack;
     stack< tree<std::string>::iterator > operand_stack;
     operator_stack.push("#");
@@ -724,14 +766,14 @@ tree<std::string>::iterator expression(int endsym){
             error=1;
         }
         if(operand_stack.size()==1&&!operator_stack.top().compare("#")){
-            return root;
+            return tmp_tree;
         }
         else{
             printf("Error in line %d : expression should be expression SEMICOLON or expression RP\n",line_info[token_counter1-1]);
-            return NULL;
+            return empty_tree;
         }  
     }
-    return NULL;
+    return empty_tree;
 }
 
 
@@ -740,9 +782,10 @@ tree<std::string>::iterator expression(int endsym){
 void treePrint(){
     tree< std::string >::iterator it;
     int depth;
+    printf("\n\nHere is the Abstract Syntax Tree!!!\n\n");
     for(it=program_tree.begin();it!=program_tree.end();++it){
         depth=program_tree.depth(it);
-        printf("--%*s%s\n",depth*2,"",(*it).c_str());
+        printf("%*s--%s\n",depth*2,"",(*it).c_str());
     }
 }
 

@@ -383,8 +383,8 @@ int gettoken(FILE * source_file,char c){
 bool scanner(FILE * source_file,char * filename){ 
     char ch;
     int t_kind;
-    printf("Here is the lexical analysis of the source file:\n\n\n");
-    printf("Lexeme Kind\t\tLexeme Value\n");
+    // printf("Here is the lexical analysis of the source file:\n\n\n");
+    // printf("Lexeme Kind\t\tLexeme Value\n");
     do{
         t_kind=gettoken(source_file,ch);
         if(t_kind==ERROR_TOKEN){
@@ -405,7 +405,7 @@ bool scanner(FILE * source_file,char * filename){
     
    
     FILE * output_file;
-    output_file = fopen("./out/scanner.txt", "w");
+    output_file = fopen("/home/yyx/DataStructureExperiment/out/scanner.txt", "w");
     if (output_file == NULL)
     {
         printf("Error opening file scanner.txt\n");
