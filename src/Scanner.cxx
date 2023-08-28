@@ -405,7 +405,7 @@ bool scanner(FILE * source_file,char * filename){
     
    
     FILE * output_file;
-    output_file = fopen("/home/yyx/DataStructureExperiment/out/scanner.txt", "w");
+    output_file = fopen("./out/scanner.txt", "w");
     if (output_file == NULL)
     {
         printf("Error opening file scanner.txt\n");

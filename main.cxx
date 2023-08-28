@@ -95,7 +95,7 @@ tree<std::string>::iterator expression_root;
 
 int main(){
     char filename[100];
-    strcpy(filename,"/home/yyx/DataStructureExperiment/test/basic.cxx");
+    strcpy(filename,"./test/basic.cxx");
 
 
     FILE *fp;
