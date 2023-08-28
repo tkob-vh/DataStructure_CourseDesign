@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.25.1)
 project(Front_End_Compiler LANGUAGES CXX) 
 
 #Set the CXX standard to use
-set(CMAKE_CXX_STANDARD 11) 
+set(CMAKE_CXX_STANDARD 17) 
 
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 

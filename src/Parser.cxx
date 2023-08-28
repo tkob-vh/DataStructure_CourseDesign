@@ -130,11 +130,16 @@ char getOperatorPriority(const char* w1,char* w2){
 
 
 //the function used to operate the program
-tree<std::string>::iterator program(){  //need to add preprocessing_list
+tree<std::string>::iterator program(){ 
     tree<std::string>::iterator root;
     readtoken(); 
     root=program_tree.set_head("program");
+    printf("the first token is %s\n",w);
     preprocessing_list_root=preprocessing_list();
+    if(preprocessing_list_root==NULL){
+        printf("Error in line %d : the first token of the program is not a preprocessing_list\n",line_info[token_counter1-1]);
+        return NULL;
+    }
     program_tree.append_child(root,preprocessing_list_root);
     external_defination_list_root = external_defination_list();
     program_tree.append_child(root,external_defination_list_root);
@@ -146,26 +151,36 @@ tree<std::string>::iterator program(){  //need to add preprocessing_list
 //the first token of preprocessing_list(#) is already read when the function is called
 //the subsequent token(# or else) is read when the function returns
 tree<std::string>::iterator preprocessing_list(){
+    printf("executing preprocessing_list()...\n");
     if(strcmp(w,"SHARP")){
         return NULL;
     }
     tree<std::string> tmp_tree;
     tree<std::string>::iterator root;
+    tree<std::string>::iterator p;
     root=tmp_tree.set_head("preprocessing_list");
-    tmp_tree.append_child(root,preprocessing());
+    p=preprocessing();
+    
+    tmp_tree.append_child(root,p);
+    for(tree<std::string>::iterator it=tmp_tree.begin();it!=tmp_tree.end();++it){
+        printf("%s\n",(*it).c_str());
+    }
     tmp_tree.append_child(root,preprocessing_list());
-    //preprocessing_list_tree=tmp_tree;
+    preprocessing_list_tree=tmp_tree;
+    root=preprocessing_list_tree.begin();
     return root;
 }
 
 //the function used to operate the preprocessing
 //the first token of preprocessing is already read when the function is called
 tree<std::string>::iterator preprocessing(){
+    printf("executing preprocessing()...\n");
     tree<std::string> tmp_tree;
     tree<std::string>::iterator root;
     root=tmp_tree.set_head("preprocessing");
     readtoken();
     if(!strcmp(w,"INCLUDE")){
+        printf("recoginzing #include\n");
         tmp_tree.append_child(root,"#include");
         readtoken();
         if(!strcmp(w,"LESS")){
@@ -190,6 +205,7 @@ tree<std::string>::iterator preprocessing(){
         }
     }
     else if(!strcmp(w,"DEFINE")){
+        printf("recoginzing #define\n");
         tmp_tree.append_child(root,"#define");
         readtoken();
         if(strcmp(w,"ID")){
@@ -212,6 +228,10 @@ tree<std::string>::iterator preprocessing(){
     else{
         printf("Error in line %d : the first token of the preprocessing is not a # \n",line_info[token_counter1-1]);
         return NULL;
+    }
+    printf("have executed the preprocessing()...\n");
+    for(tree<std::string>::iterator it=tmp_tree.begin();it!=tmp_tree.end();++it){
+        printf("%s\n",(*it).c_str());
     }
     return root;
 }
@@ -716,8 +736,9 @@ tree<std::string>::iterator expression(int endsym){
 
 
 //the function used to traverse and print the tree
+
 void treePrint(){
-    tree<std::string>::iterator it;
+    tree< std::string >::iterator it;
     int depth;
     for(it=program_tree.begin();it!=program_tree.end();++it){
         depth=program_tree.depth(it);
