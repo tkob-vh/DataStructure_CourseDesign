@@ -154,7 +154,7 @@ tree<std::string>::iterator preprocessing_list(){
     root=tmp_tree.set_head("preprocessing_list");
     tmp_tree.append_child(root,preprocessing());
     tmp_tree.append_child(root,preprocessing_list());
-    preprocessing_list_tree=tmp_tree;
+    //preprocessing_list_tree=tmp_tree;
     return root;
 }
 

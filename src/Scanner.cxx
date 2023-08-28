@@ -380,14 +380,7 @@ int gettoken(FILE * source_file,char c){
 
 
 //The function used to scan the source file and return the message.
-bool scanner(FILE * source_file,char * filename){
-
-    source_file = fopen(filename, "r");
-    if (source_file == NULL)
-    {
-        printf("Error opening file\n");
-        return false;
-    };
+bool scanner(FILE * source_file,char * filename){ 
     char ch;
     int t_kind;
     printf("Here is the lexical analysis of the source file:\n\n\n");
@@ -399,24 +392,23 @@ bool scanner(FILE * source_file,char * filename){
             return false;
         }
         else if(t_kind==LINECOMMENT){
-            printf("-------Line comment.-------\n");
+            //printf("-------Line comment.-------\n");
         }
         else if(t_kind==BLOCKCOMMENT){
-            printf("-------Block comment.-------\n");
+            //printf("-------Block comment.-------\n");
         }
         else{
-            printf("%-10s\t\t%s\n",t_kinds[token_counter-1],token_text[token_counter-1]);
-        }
+            //printf("%-10s\t\t%s\n",t_kinds[token_counter-1],token_text[token_counter-1]);
+    }
 
     }while(t_kind!=END_OF_FILE);
     
-    
-    
+   
     FILE * output_file;
-    output_file = fopen("./out/scanner.txt", "w");
+    output_file = fopen("/home/yyx/DataStructureExperiment/out/scanner.txt", "w");
     if (output_file == NULL)
     {
-        printf("Error opening file\n");
+        printf("Error opening file scanner.txt\n");
         return false;
     };
     time_t t;
@@ -432,8 +424,6 @@ bool scanner(FILE * source_file,char * filename){
 
     
     
-    fclose(source_file);
-
     printf("\n\n\n");
     return true;
 

@@ -95,23 +95,28 @@ tree<std::string>::iterator expression_root;
 
 int main(){
     char filename[100];
-    char filename1[100];
+    strcpy(filename,"/home/yyx/DataStructureExperiment/test/TestRoutine.cxx");
+
+
     FILE *fp;
-    // strcpy(filename,"./test/");
-    // printf("Please input the filename: \n");
-    // scanf("%s",filename1);
-    // strcat(filename,filename1);
-    strcpy(filename,"./test/TestRoutine.cxx");
+    fp = fopen(filename, "r");
+    if (fp == NULL)
+    {
+        printf("Error opening file in scanner.\n");
+        return false;
+    };
+
+    
     //lexical analysis
     scanner(fp,filename);
 
     //syntax analysis
-    // program_root=program();
-    // treePrint();
+    program_root=program();
+    treePrint();
     //intermediate code generation
     //...
 
-
+    fclose(fp);
     return 0;
 }
 
