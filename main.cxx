@@ -21,16 +21,17 @@ int line_info[1000]; // store the line number of each token
 size_t line_counter = 1; // count the line number
 size_t token_counter = 0; // count the token number in Scanner.c
 size_t token_counter1 = 0; // count the token number in Parser.c
-char Keywords[14][10]={"int","float","char","void","if","else","while","return","for","do","break","continue","define","include"};//store the main keywords
-char Capital_Keywords[14][10]={"INT","FLOAT","CHAR","VOID","IF","ELSE","WHILE","RETURN","FOR","DO","BREAK","CONTINUE","DEFINE","INCLUDE"};//store the main keywords
+char Keywords[16][10]={"int","float","char","void","if","else","while","return","for","do","break","continue","define","include","long","double"};//store the main keywords
+char Capital_Keywords[16][10]={"INT","FLOAT","CHAR","VOID","IF","ELSE","WHILE","RETURN","FOR","DO","BREAK","CONTINUE","DEFINE","INCLUDE","LONG","DOUBLE"};//store the main keywords
 char w[20]; //store the token kind of contomparary token in Parser.c
 bool error_flag; // once error_flag is 1, release the memory of AST .
 int errors=0;
 char temp_kind[20];
 char temp_text[20];
-char TK[47][15]={"ERROR_TOKEN","ID","INT_LITERAL","FLOAT_LITERAL","CHAR_LITERAL","INT","FLOAT","CHAR","VOID","IF","ELSE","WHILE","RETURN","FOR","DO","BREAK","CONTINUE","DEFINE","INCLUDE","SHARP","LINECOMMENT","BLOCKCOMMENT","PLUS","MINUS","MULTIPLY","DIVIDE","MOD","ASSIGN","EQ","NEQ","GREATER","LESS","GREATER_EQ","LESS_EQ","LBRACE","RBRACE","LBRACKET","RBRACKET","LP","RP","AND","OR","SEMICOLON","SINGLE_QUOTE","DOUBLE_QUOTE","COMMA","END_OF_FILE"};
-
-
+char TK[51][15]={"ERROR_TOKEN","ID","INT_LITERAL","FLOAT_LITERAL","CHAR_LITERAL","INT","FLOAT","CHAR","VOID","IF","ELSE","WHILE","RETURN","FOR","DO","BREAK","CONTINUE","DEFINE","INCLUDE","LONG","DOUBLE","SHARP","LINECOMMENT","BLOCKCOMMENT","PLUS","MINUS","MULTIPLY","DIVIDE","MOD","ASSIGN","EQ","NEQ","GREATER","LESS","GREATER_EQ","LESS_EQ","LBRACE","RBRACE","LBRACKET","RBRACKET","LP","RP","AND","OR","SEMICOLON","SINGLE_QUOTE","DOUBLE_QUOTE","COMMA","END_OF_FILE","LONG_LITERAL","DOUBLE_LITERAL"};
+char function_list[100][20];
+int function_counter;
+int brace_counter;
 char op_table[17][17]={
             //+     -     *     /     %     =    ==    !=     >     <    >=    <=    &&    ||     (     )     #
 /* + */     {'>',  '>',  '<',  '<',  '<',  '<',  '<',  '<',  '>',  '>',  '>',  '>',  '<',  '<',  '<',  '>',  '>'},
@@ -38,9 +39,9 @@ char op_table[17][17]={
 /* * */     {'>',  '>',  '>',  '>',  '>',  '<',  '<',  '<',  '>',  '>',  '>',  '>',  '<',  '<',  '<',  '>',  '>'},
 /* / */     {'>',  '>',  '>',  '>',  '>',  '<',  '<',  '<',  '>',  '>',  '>',  '>',  '<',  '<',  '<',  '>',  '>'},
 /* % */     {'>',  '>',  '>',  '>',  '>',  '<',  '<',  '<',  '>',  '>',  '>',  '>',  '<',  '<',  '<',  '>',  '>'},
-/* = */     {'<',  '<',  '<',  '<',  '<',  '=',  '<',  '<',  '<',  '<',  '<',  '<',  '<',  '<',  '<',  '<',  '<'},
-/* == */    {'<',  '<',  '<',  '<',  '<',  '<',  '=',  '=',  '<',  '<',  '<',  '<',  '<',  '<',  '<',  '<',  '<'},
-/* != */    {'<',  '<',  '<',  '<',  '<',  '<',  '=',  '=',  '<',  '<',  '<',  '<',  '<',  '<',  '<',  '<',  '<'},
+/* = */     {'<',  '<',  '<',  '<',  '<',  '=',  '<',  '<',  '<',  '<',  '<',  '<',  '<',  '<',  '<',  ' ',  '>'},
+/* == */    {'<',  '<',  '<',  '<',  '<',  '<',  '=',  '=',  '<',  '<',  '<',  '<',  '<',  '<',  '<',  '>',  '>'},
+/* != */    {'<',  '<',  '<',  '<',  '<',  '<',  '=',  '=',  '<',  '<',  '<',  '<',  '<',  '<',  '<',  '>',  '>'},
 /* > */     {'>',  '>',  '>',  '>',  '>',  '<',  '<',  '<',  '>',  '>',  '>',  '>',  '<',  '<',  '<',  '>',  '>'},
 /* < */     {'>',  '>',  '>',  '>',  '>',  '<',  '<',  '<',  '>',  '>',  '>',  '>',  '<',  '<',  '<',  '>',  '>'},
 /* >= */    {'>',  '>',  '>',  '>',  '>',  '<',  '<',  '<',  '>',  '>',  '>',  '>',  '<',  '<',  '<',  '>',  '>'},
@@ -59,45 +60,21 @@ char table_arr[17][15]={"PLUS","MINUS","MULTIPLY","DIVIDE","MOD","ASSIGN","EQ","
 
 tree<std::string> program_tree;
 tree<std::string>::iterator program_root;
-
 tree<std::string> preprocessing_list_tree;
-tree<std::string>::iterator preprocessing_list_root;
-
 tree<std::string> external_defination_list_tree;
-tree<std::string>::iterator external_defination_list_root;
-
-tree<std::string> external_variable_defination_tree;
-tree<std::string>::iterator external_variable_defination_root;
-
-tree<std::string> function_defination_tree;
-tree<std::string>::iterator function_defination_root;
-
-tree<std::string> formal_parameter_list_tree;
-tree<std::string>::iterator formal_parameter_list_root;
-
-tree<std::string> compound_statement_tree;
-tree<std::string>::iterator compound_statement_root;
-
-tree<std::string> local_variable_defination_list_tree;
-tree<std::string>::iterator local_variable_defination_list_root;
-
-tree<std::string> statement_list_tree;
-tree<std::string>::iterator statement_list_root;
-
-tree<std::string> statement_tree;
-tree<std::string>::iterator statement_root;
-
-tree<std::string> expression_tree;
-tree<std::string>::iterator expression_root;
-
+tree<std::string>::iterator it;
 tree<std::string> empty_tree;
 
 
 int main(){
+    
+    
+    
+    
+    //open the file which is going to be scanned
     char filename[100];
-    strcpy(filename,"/home/yyx/DataStructureExperiment/test/basic.cxx");
-
-
+    char input[50];
+    strcpy(filename,"/home/yyx/DataStructureExperiment/test/function_defination.cxx");
     FILE *fp;
     fp = fopen(filename, "r");
     if (fp == NULL)
@@ -107,16 +84,29 @@ int main(){
     };
 
     
+
+
     //lexical analysis
     scanner(fp,filename);
 
+  
+  
+  
     //syntax analysis
     program_root=program();
-    treePrint();
+    printTree();
+
+
+
+
     //intermediate code generation
-    //...
+    program_code();
+
+
+
 
     fclose(fp);
+    
     return 0;
 }
 

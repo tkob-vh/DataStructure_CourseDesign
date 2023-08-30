@@ -17,7 +17,7 @@
 //Lookup the keyword and return its token kind, else return ID
 int LookupKeyword(int token_num){
     int i;
-    for(i=0;i<14;i++){
+    for(i=0;i<16;i++){
         if(strcmp(token_text[token_num],Keywords[i])==0){
             return i+5;
         }
@@ -96,14 +96,28 @@ int gettoken(FILE * source_file,char c){
         do{
             token_text[token_counter][i++]=c;
             c=fgetc(source_file);
-        }while(isdigit(c)||c=='.'||c=='x'); //without considering  suffix form such as 123L
+        }while(isdigit(c)||c=='.'||c=='x'||c=='L'); 
         ungetc(c,source_file);
         token_text[token_counter][i]='\0';
         token_counter++;
         if(strchr(token_text[token_counter-1],'.')!=NULL){
-            strcpy(t_kinds[token_counter-1],EnumtoStr(FLOAT_LITERAL));
+            // if(strstr(token_text[token_counter-1],"lf")!=NULL){
+            //     strcpy(t_kinds[token_counter-1],EnumtoStr(DOUBLE_LITERAL));
+            //     line_info[token_counter-1]=line_counter;
+            //     return DOUBLE_LITERAL;
+            // }
+            
+            // else{
+                strcpy(t_kinds[token_counter-1],EnumtoStr(FLOAT_LITERAL));
+                line_info[token_counter-1]=line_counter;
+                return FLOAT_LITERAL;
+            // }
+           
+        }
+        else if(strchr(token_text[token_counter-1],'L')!=NULL){
+            strcpy(t_kinds[token_counter-1],EnumtoStr(LONG_LITERAL));
             line_info[token_counter-1]=line_counter;
-            return FLOAT_LITERAL;
+            return LONG_LITERAL;
         }
         else{
             strcpy(t_kinds[token_counter-1],EnumtoStr(INT_LITERAL));
@@ -383,8 +397,7 @@ int gettoken(FILE * source_file,char c){
 bool scanner(FILE * source_file,char * filename){ 
     char ch;
     int t_kind;
-    // printf("Here is the lexical analysis of the source file:\n\n\n");
-    // printf("Lexeme Kind\t\tLexeme Value\n");
+   
     do{
         t_kind=gettoken(source_file,ch);
         if(t_kind==ERROR_TOKEN){
@@ -398,12 +411,13 @@ bool scanner(FILE * source_file,char * filename){
             //printf("-------Block comment.-------\n");
         }
         else{
-            //printf("%-10s\t\t%s\n",t_kinds[token_counter-1],token_text[token_counter-1]);
+            // printf("%-10s\t\t%s\n",t_kinds[token_counter-1],token_text[token_counter-1]);
     }
 
     }while(t_kind!=END_OF_FILE);
     
-   
+    // printf("Finish the lexical analysis.\n");
+
     FILE * output_file;
     output_file = fopen("/home/yyx/DataStructureExperiment/out/scanner.txt", "w");
     if (output_file == NULL)
@@ -424,7 +438,6 @@ bool scanner(FILE * source_file,char * filename){
 
     
     
-    printf("\n\n\n");
     return true;
 
 }
