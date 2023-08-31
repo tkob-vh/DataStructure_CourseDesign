@@ -97,11 +97,15 @@ This function is used to generate the external defination code
 The external defination code begins with "external_defination_list" and ends with "EOF"
 ********************************************************************/
 bool external_defination_list_code(FILE *fp){
+    bool for_tag=false;
     int counter=get_external_initial_counter();
     while(counter<token_counter1){
         if(!strcmp(token_text[counter],";")){
             fseek(fp,-1,SEEK_CUR);
-            fprintf(fp,"%s\n%*s",token_text[counter],3*brace_counter,"");
+            if(for_tag){
+                fprintf(fp,"%s ",token_text[counter]);
+            }
+            else fprintf(fp,"%s\n%*s",token_text[counter],3*brace_counter,"");
         }
         else if(!strcmp(token_text[counter],"}")){
             brace_counter--;
@@ -119,6 +123,7 @@ bool external_defination_list_code(FILE *fp){
         }
         else if(!strcmp(token_text[counter],")")){
             fseek(fp,-1,SEEK_CUR);
+            if(for_tag) for_tag=false;
             fprintf(fp,"%s ",token_text[counter]);
         }
         else if(!strcmp(token_text[counter],",")){
@@ -139,6 +144,9 @@ bool external_defination_list_code(FILE *fp){
         else{
             if(!strcmp(token_text[counter-1],"(")){
                 fseek(fp,-1,SEEK_CUR);
+            }
+            if(!strcmp(token_text[counter],"for")){
+                for_tag=true;
             }
             fprintf(fp,"%s ",token_text[counter]);
         }   

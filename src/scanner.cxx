@@ -402,7 +402,7 @@ bool scanner(FILE * source_file,char * filename){
     do{
         t_kind=gettoken(source_file,ch);
         if(t_kind==ERROR_TOKEN){
-            printf("Error: line %d: The token is not recognized.\n",line_counter);
+            //printf("Error: line %d: The token is not recognized.\n",line_counter);
             return false;
         }
         else if(t_kind==LINECOMMENT){
@@ -420,7 +420,7 @@ bool scanner(FILE * source_file,char * filename){
     // printf("Finish the lexical analysis.\n");
 
     FILE * output_file;
-    output_file = fopen("/home/yyx/DataStructureExperiment/out/scanner.txt", "w");
+    output_file = fopen("./out/scanner.txt", "w");
     if (output_file == NULL)
     {
         printf("Error opening file scanner.txt\n");
