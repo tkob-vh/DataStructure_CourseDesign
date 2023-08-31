@@ -1,16 +1,17 @@
 /********************************************************************
-* FILE: Scanner.cxx
+* FILE: scanner.cxx
 * DESCRIPTION:
 * This file is used to analyze the lexical of the source file using FSM.
-* 
+* The output is in the ./out/scanner.txt
 * AUTHOR: yyx
+* ID: U202215545
 ********************************************************************/
 
 #include<stdio.h>
 #include<ctype.h>
 #include<string.h>
 #include<time.h>
-#include "Scanner.hh"
+#include "scanner.hh"
 #include "var.hh"
 
 
@@ -427,8 +428,15 @@ bool scanner(FILE * source_file,char * filename){
     };
     time_t t;
     time(&t);
-    fprintf(output_file,"TIME: %s\n",ctime(&t));
-    fprintf(output_file,"Here is the lexical analysis of the source file:\n\n\n");
+    fprintf(output_file,"/********************************************************************\n");
+    fprintf(output_file,"* FILE: scanner.txt\n");
+    fprintf(output_file,"* DESCRIPTION:\n");
+    fprintf(output_file,"* This file is the output of the scanner.\n");
+    fprintf(output_file,"* AUTHOR: yyx\n");
+    fprintf(output_file,"* ID: U202215545\n");
+    fprintf(output_file,"* TIME: %s",ctime(&t));
+    fprintf(output_file,"********************************************************************/\n\n");
+    fprintf(output_file,"Here is the lexical analysis of the source file:\n\n");
     fprintf(output_file,"Line Number\t\t\tLexeme Kind\t\t\t\tLexeme Value\n");
     for(int i=0;i<token_counter;i++){
         fprintf(output_file,"%10d\t\t\t%-15s\t\t\t%s\n",line_info[i],t_kinds[i],token_text[i]);

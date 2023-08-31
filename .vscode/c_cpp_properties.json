@@ -6,6 +6,7 @@
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/include",
                 "${workspaceFolder}/include",
+                "${workspaceFolder}/include",
                 "${workspaceFolder}/include"
             ],
             "defines": [],

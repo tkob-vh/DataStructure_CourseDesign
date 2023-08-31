@@ -1,5 +1,5 @@
 /********************************************************************
-* FILE:IRGenerator.h 
+* FILE:code_gen.hh
 * DESCRIPTION:
 * AUTHOR: yyx
 ********************************************************************/
@@ -17,3 +17,4 @@ extern char token_text[1000][20];
 bool program_code();
 bool preprocessing_code(FILE *fp);
 bool external_defination_list_code(FILE *fp);
+int get_external_initial_counter();

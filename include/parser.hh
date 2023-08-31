@@ -1,8 +1,7 @@
 /********************************************************************
-* FILE: Scanner.h
+* FILE: parser.hh
 * DESCRIPTION:
 * AUTHOR: yyx
-* LASTREVISED: 2023.8.16
 ********************************************************************/
 #pragma once
 #include "tree.hh"

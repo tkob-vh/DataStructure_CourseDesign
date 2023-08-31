@@ -1,1 +1,1 @@
-add_library(SRC STATIC "${PROJECT_SOURCE_DIR}/src/Scanner.cxx" "${PROJECT_SOURCE_DIR}/src/Parser.cxx" "${PROJECT_SOURCE_DIR}/src/IRGen.cxx" )
+add_library(SRC STATIC "${PROJECT_SOURCE_DIR}/src/scanner.cxx" "${PROJECT_SOURCE_DIR}/src/parser.cxx" "${PROJECT_SOURCE_DIR}/src/code_gen.cxx" )

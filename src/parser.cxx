@@ -1,16 +1,18 @@
 /********************************************************************
-* FILE: Parser.cxx
+* FILE: parser.cxx
 * DESCRIPTION:
-* 
+* This file is used to parse the source code and generate the abstract 
+* syntax tree. The output file is in the ./out/tree.txt .
 * AUTHOR: yyx
+* ID: U202215545
 ********************************************************************/
 
 #include<string.h>
-#include "Parser.hh"
+#include "parser.hh"
 #include<stack>
 #include<time.h>
 #include "var.hh"
-#include "Scanner.hh"
+#include "scanner.hh"
 using std::stack;
 
 
@@ -917,10 +919,15 @@ void printTree(){
     }
     time_t t;
     time(&t);
-    tm *p=localtime(&t);
-    fprintf(fp,"%04d:%02d:%02d %02d:%02d:%02d\n", p->tm_year + 1900, p->tm_mon + 1, p->tm_mday,p->tm_hour,p->tm_min,p->tm_sec);
-    //(fp,"TIME: %s\n",ctime(&t));
-    fprintf(fp,"\n\nHere is the Abstract Syntax Tree!!!\n\n");
+    fprintf(fp,"/********************************************************************\n");
+    fprintf(fp,"* FILE: tree.txt\n");
+    fprintf(fp,"* DESCRIPTION: \n");
+    fprintf(fp,"* This is the output of the parser, which is the abstract syntax tree.\n");
+    fprintf(fp,"* AUTHOR: yyx\n");
+    fprintf(fp,"* ID: U202215545\n");
+    fprintf(fp,"* TIME: %s",ctime(&t));
+    fprintf(fp,"********************************************************************/\n\n");
+    fprintf(fp,"Here is the Abstract Syntax Tree!!!\n\n");
     fprintf(fp,"%s\n",(*program_root).c_str());
     stack<tree<std::string>::iterator> s;
     s.push(program_root);
