@@ -15,7 +15,7 @@
 #include "var.hh"
 
 
-//Lookup the keyword and return its token kind, else return ID
+//Lookup the keyword,such as int,include and if, and return its token kind, else return ID
 int LookupKeyword(int token_num){
     int i;
     for(i=0;i<16;i++){
@@ -394,7 +394,7 @@ int gettoken(FILE * source_file,char c){
 }
 
 
-//The function used to scan the source file and return the message.
+//The function used to scan the source file and return the error flag
 bool scanner(FILE * source_file,char * filename){ 
     char ch;
     int t_kind;

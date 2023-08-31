@@ -16,7 +16,7 @@
 using std::stack;
 
 
-//the function used to judge whether the token w is a capital keyword ,such as INT,CHAR,etc.
+//the function is used to judge whether the token w is a capital keyword ,such as INT,CHAR,etc.
 bool LookupCapitalKeywords(char* w){
     for(int i=0;i<16;i++){
         if(strcmp(w,Capital_Keywords[i])==0){
@@ -27,14 +27,17 @@ bool LookupCapitalKeywords(char* w){
 }
 
 
-//the function used to read the next token,such as ID,INT_LITERAL,etc.`
+
+//the function is used to read the next token,such as ID,INT_LITERAL,etc.`
 void readtoken(){
     strcpy(w, t_kinds[token_counter1]);
     token_counter1++;
 }
 
 
-//the function used to judge whether the token w is an operator
+
+
+//the function is used to judge whether the token w is an operator
 bool isOperator(char* w){
     if(!strcmp(w,"PLUS")||!strcmp(w,"MINUS")||!strcmp(w,"MULTIPLY")||!strcmp(w,"DIVIDE")||!strcmp(w,"MOD")||!strcmp(w,"ASSIGN")||!strcmp(w,"EQ")||!strcmp(w,"NEQ")||!strcmp(w,"GREATER")||!strcmp(w,"LESS")||!strcmp(w,"GREATER_EQ")||!strcmp(w,"LESS_EQ")||!strcmp(w,"AND")||!strcmp(w,"OR")||!strcmp(w,"LP")||!strcmp(w,"RP")||!strcmp(w,"SHARP")){
         return true;
@@ -45,6 +48,9 @@ bool isOperator(char* w){
 }
 
 
+
+
+//the function is used to judge whether the token_text w is a function, such as main.
 bool isFunction(char* w){
     for(int i=0;i<function_counter;i++){
         if(!strcmp(w,function_list[i])){
@@ -53,6 +59,8 @@ bool isFunction(char* w){
     }
     return false;
 }
+
+
 
 //the function used to convert the capital operator str,such as PLUS, MINUS, to the enum type
 Token_kind StrtoEnum(char * str){
@@ -142,7 +150,7 @@ char getOperatorPriority(const char* w1,char* w2){
 
 
 
-//the function used to operate the program
+//the function used to operate the hole program
 tree<std::string>::iterator program(){ 
     tree<std::string>::iterator root;
     readtoken(); 
@@ -155,9 +163,11 @@ tree<std::string>::iterator program(){
 }
 
 
-//the function used to operate the preprocessing_list
-//the first token of preprocessing_list(#) is already read when the function is called
-//the subsequent token(# or else) is read when the function returns
+/********************************************************************
+the function is used to operate the preprocessing_list, such as #include<stdio.h>, #define MAX 1000, etc.
+the first token of preprocessing_list(#) is already read when the function is called
+the subsequent token(# or else) is read when the function returns
+********************************************************************/
 tree<std::string> preprocessing_list(){
     if(strcmp(w,"SHARP")){
         return empty_tree;
@@ -184,8 +194,14 @@ tree<std::string> preprocessing_list(){
     return tmp_tree;
 }
 
-//the function used to operate the preprocessing
-//the first token of preprocessing is already read when the function is called
+
+
+
+/********************************************************************
+the function used to operate the preprocessing
+the first token of preprocessing is already read when the function is called
+the subsequent token is read when the function returns
+********************************************************************/
 tree<std::string> preprocessing(){
     tree<std::string> tmp_tree;
     tree<std::string>::iterator root;
@@ -248,8 +264,12 @@ tree<std::string> preprocessing(){
 }
 
 
-//the function used to operate the external_defination_list 
-//the first token of external_defination_list is already read when the function is called
+
+
+/********************************************************************
+the function used to operate the external_defination_list 
+the first token of external_defination_list is already read when the function is called
+********************************************************************/
 tree<std::string> external_defination_list(){
     if(!strcmp(w,"END_OF_FILE")){   
         return empty_tree;
@@ -273,9 +293,14 @@ tree<std::string> external_defination_list(){
     return tmp_tree;
 }
 
-//the function used to operate the external_defination
-//the first token of external_defination is already read when the function is called
-//when the function returns,the last token of external_defination is already read,while the subsequent token is not read
+
+
+
+/********************************************************************
+the function used to operate the external_defination
+the first token of external_defination is already read when the function is called
+when the function returns,the last token of external_defination is already read,while the subsequent token is not read
+********************************************************************/
 tree<std::string> external_defination(){
     tree<std::string>::iterator root;
     tree<std::string> tmp_tree;
@@ -309,8 +334,11 @@ tree<std::string> external_defination(){
 
 
 
-//the function used to operate the external_variable_defination
-//the variable type and the variable name are already read when the function is called, and the COMMA or SEMICOLON is read, too.
+
+/********************************************************************
+the function used to operate the external_variable_defination
+the variable type and the variable name are already read when the function is called, and the COMMA or SEMICOLON is read, too.
+********************************************************************/
 tree<std::string> external_variable_defination(){
     tree<std::string> tmp_tree;
     tree<std::string>::iterator root;
@@ -347,8 +375,12 @@ tree<std::string> external_variable_defination(){
 }
 
 
-//the function used to operate the function_defination
-//the return type, the function name and the LP are already read when the function is called
+
+
+/********************************************************************
+the function used to operate the function_defination
+the return type, the function name and the LP are already read when the function is called
+********************************************************************/
 tree<std::string> function_defination(){
     tree<std::string> tmp_tree;
     tree<std::string> tmp_tree1;
@@ -382,9 +414,13 @@ tree<std::string> function_defination(){
 }
 
 
-//the function used to operate the formal_parameter_list
-//the LP is already read when the function is called
-//the RP is read when the function returns
+
+
+/********************************************************************
+the function used to operate the formal_parameter_list
+the LP is already read when the function is called
+the RP is read when the function returns
+********************************************************************/
 tree<std::string> formal_parameter_list(){
     tree<std::string> tmp_tree;
     tree<std::string>::iterator root;
@@ -404,9 +440,12 @@ tree<std::string> formal_parameter_list(){
     }
 }
 
-//the function used to operate the formal_parameter
-//the formal parameter type has already been read when the function is called 
-//the subsquent parameter type or RP is read when the function returns
+
+/********************************************************************
+the function used to operate the formal_parameter
+the formal parameter type has already been read when the function is called 
+the subsquent parameter type or RP is read when the function returns
+********************************************************************/
 tree<std::string> formal_parameter(){
     tree<std::string> tmp_tree;
     tree<std::string>::iterator root;
@@ -441,9 +480,12 @@ tree<std::string> formal_parameter(){
 }
 
 
-//the function used to operate the compound_statement
-//the LBRACE is already read when the function is called
-//the RBRACE and the next token are read when the function returns
+
+/********************************************************************
+the function used to operate the compound_statement
+the LBRACE is already read when the function is called
+the RBRACE and the next token are read when the function returns
+********************************************************************/
 tree<std::string> compound_statement(){
    
     tree<std::string> tmp_tree;
@@ -476,9 +518,12 @@ tree<std::string> compound_statement(){
 }
 
 
-//the function used to operate the local_variable_defination_list
-//the first token (ie. the type) of local_variable_defination_list is already read when the function is called
-//the subsequent token is read when the function returns
+
+/********************************************************************
+the function used to operate the local_variable_defination_list
+the first token (ie. the type) of local_variable_defination_list is already read when the function is called
+the subsequent token is read when the function returns
+********************************************************************/
 tree<std::string> local_variable_defination_list(){
     if(strcmp(w,"INT") && strcmp(w,"FLOAT") && strcmp(w,"CHAR")&& strcmp(w,"LONG")&& strcmp(w,"DOUBLE")){
         return empty_tree;
@@ -497,9 +542,12 @@ tree<std::string> local_variable_defination_list(){
 }
 
 
-//the function used to operate the local_variable_defination
-//the first token (ie. the type) of local_variable_defination is already read when the function is called
-//the SEMICOLON and the subsequent token are read when the function returns
+
+/********************************************************************
+the function used to operate the local_variable_defination
+the first token (ie. the type) of local_variable_defination is already read when the function is called
+the SEMICOLON and the subsequent token are read when the function returns
+********************************************************************/
 tree<std::string> local_variable_defination(){
     tree<std::string> tmp_tree;
     tree<std::string>::iterator root;
@@ -565,9 +613,11 @@ tree<std::string> local_variable_defination(){
 
 
 
-//the function used to operate the statement_list
-//the first token of statement_list is already read when the function is called
-//the subsequent token is read when the function returns
+/********************************************************************
+the function used to operate the statement_list
+the first token of statement_list is already read when the function is called
+the subsequent token is read when the function returns
+********************************************************************/
 tree<std::string> statement_list(){
     if(!strcmp(w,"RBRACE")){
         return empty_tree;
@@ -603,8 +653,12 @@ tree<std::string> statement_list(){
 
 }
 
-//the function used to operate the statement
-//the first token of statement is already read when the function is called
+
+
+/********************************************************************
+the function used to operate the statement
+the first token of statement is already read when the function is called
+********************************************************************/
 tree<std::string> statement(){
     tree<std::string> tmp_tree;
     tree<std::string> tmp_tree1;
@@ -777,9 +831,13 @@ tree<std::string> statement(){
     }
 }
 
-//the function used to operate the expression, ended with endsym,which is semicolon or RP
-//the first token of expression is already read when the function is called
-//the subsequent token is not read when the function returns
+
+
+/********************************************************************
+the function used to operate the expression, ended with endsym,which is semicolon or RP
+the first token of expression is already read when the function is called
+the subsequent token is not read when the function returns
+********************************************************************/
 tree<std::string> expression(int endsym){
     stack<std::string> operator_stack;
     stack< tree<std::string>::iterator > operand_stack;
@@ -887,29 +945,34 @@ tree<std::string> expression(int endsym){
 }
 
 
+
 //the function used to traverse and print the tree
+// void treePrint(){
+//     FILE *fp;
+//     fp=fopen("./out/tree1.txt","w");
+//     if(fp==NULL){
+//         printf("Error in opening the file tree.txt\n");
+//         return;
+//     }
 
-void treePrint(){
-    FILE *fp;
-    fp=fopen("./out/tree1.txt","w");
-    if(fp==NULL){
-        printf("Error in opening the file tree.txt\n");
-        return;
-    }
-
-    tree< std::string >::iterator it;
-    int depth;
-    fprintf(fp,"\n\nHere is the Abstract Syntax Tree!!!\n\n");
-    for(it=program_tree.begin();it!=program_tree.end();++it){
-        depth=program_tree.depth(it);
-        if(program_tree.previous_sibling(it)==NULL)
-        fprintf(fp,"%*s├──%s\n",depth*2,"",(*it).c_str());
-        else
-        fprintf(fp,"%*s└──%s\n",depth*2,"",(*it).c_str());
-    }
-}
+//     tree< std::string >::iterator it;
+//     int depth;
+//     fprintf(fp,"\n\nHere is the Abstract Syntax Tree!!!\n\n");
+//     for(it=program_tree.begin();it!=program_tree.end();++it){
+//         depth=program_tree.depth(it);
+//         if(program_tree.previous_sibling(it)==NULL)
+//         fprintf(fp,"%*s├──%s\n",depth*2,"",(*it).c_str());
+//         else
+//         fprintf(fp,"%*s└──%s\n",depth*2,"",(*it).c_str());
+//     }
+// }
 
 
+
+
+/********************************************************************
+This function is used to print the AST
+********************************************************************/
 void printTree(){
     FILE *fp;
     fp=fopen("./out/tree.txt","w");

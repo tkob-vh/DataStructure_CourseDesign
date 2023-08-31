@@ -20,8 +20,9 @@
 
 
 
-
-//This function is used to generate the IR code
+/********************************************************************
+This function is used to generate the IR code
+********************************************************************/
 bool program_code(){
     FILE *fp;
     fp=fopen("./out/intermediate_code.cxx","w");
@@ -60,8 +61,12 @@ bool program_code(){
     return true;
 }
 
-//This function is used to generate the preprocessing code
-//The preprocessing code begins with "preprocessing_list" and ends with "external_defination_list"
+
+
+/********************************************************************
+This function is used to generate the preprocessing code
+The preprocessing code begins with "preprocessing_list" and ends with "external_defination_list"
+********************************************************************/
 bool preprocessing_code(FILE *fp){
     while(1){
         while(*it!="preprocessing"){
@@ -87,11 +92,15 @@ bool preprocessing_code(FILE *fp){
 
 
 
-
+/********************************************************************
+This function is used to generate the external defination code
+The external defination code begins with "external_defination_list" and ends with "EOF"
+********************************************************************/
 bool external_defination_list_code(FILE *fp){
     int counter=get_external_initial_counter();
     while(counter<token_counter1){
         if(!strcmp(token_text[counter],";")){
+            fseek(fp,-1,SEEK_CUR);
             fprintf(fp,"%s\n%*s",token_text[counter],3*brace_counter,"");
         }
         else if(!strcmp(token_text[counter],"}")){
@@ -110,13 +119,28 @@ bool external_defination_list_code(FILE *fp){
         }
         else if(!strcmp(token_text[counter],")")){
             fseek(fp,-1,SEEK_CUR);
+            fprintf(fp,"%s ",token_text[counter]);
+        }
+        else if(!strcmp(token_text[counter],",")){
+            fseek(fp,-1,SEEK_CUR);
             fprintf(fp,"%s",token_text[counter]);
+        }
+        else if(!strcmp(token_text[counter],"[")){
+            fseek(fp,-1,SEEK_CUR);
+            fprintf(fp,"%s",token_text[counter]);
+        }
+        else if(!strcmp(token_text[counter],"]")){
+            fseek(fp,-1,SEEK_CUR);
+            fprintf(fp,"%s ",token_text[counter]);
         }
         else if(!strcmp(token_text[counter],"EOF")){
             1;
         }
         else{
-             fprintf(fp,"%s ",token_text[counter]);
+            if(!strcmp(token_text[counter-1],"(")){
+                fseek(fp,-1,SEEK_CUR);
+            }
+            fprintf(fp,"%s ",token_text[counter]);
         }   
         counter++;
     }
@@ -124,7 +148,9 @@ bool external_defination_list_code(FILE *fp){
 }
 
 
-
+/********************************************************************
+This function is used to get the initial counter of the external defination
+********************************************************************/
 int get_external_initial_counter(){
     int t;
     for(t=0;t<token_counter1;t++){
