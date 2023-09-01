@@ -72,7 +72,7 @@ int main(){
     //open the file which is going to be scanned
     char filename[100];
     char input[50];
-    strcpy(filename,"./test/error.cxx");
+    strcpy(filename,"./test/TestRoutine.cxx");
     FILE *fp;
     fp = fopen(filename, "r");
     if (fp == NULL)
