@@ -44,12 +44,13 @@ void readtoken(){
 
 
 void jumpLine(){
-    int tk=token_counter1-1;
-    int line_c=line_info[tk];
-    while(line_info[tk]!=line_c){
-        tk++;
+    int line_c=line_info[token_counter1-1];
+    printf("line_c is %d\n",line_c);
+    while(line_info[token_counter1-1]<line_c+1 && strcmp(w,"END_OF_FILE")){
+        readtoken();
+        printf("line++\n");
     }
-    token_counter1=tk;
+    printf("the next line is %d\n",line_info[token_counter1-1]);   
 }
 
 //the function is used to judge whether the token w is an operator
@@ -234,7 +235,7 @@ tree<std::string> preprocessing(){
         }
         else{
             printf("Error in line %d : the token after the \"include\" is not a < or a \" \n",line_info[token_counter1-1]);
-            jumpLine();
+             
             return empty_tree;
         }
     }
@@ -243,7 +244,7 @@ tree<std::string> preprocessing(){
         readtoken();
         if(strcmp(w,"ID")){
             printf("Error in line %d : the token after the \"define\" is not an identifier \n",line_info[token_counter1-1]);
-            jumpLine();
+             
             return empty_tree;
         }
         else{
@@ -251,7 +252,7 @@ tree<std::string> preprocessing(){
             readtoken();
             if(strcmp(w,"INT_LITERAL") && strcmp(w,"FLOAT_LITERAL") && strcmp(w,"CHAR_LITERAL")){
                 printf("Error in line %d : the third token of the preprocessing is not a literal \n",line_info[token_counter1-1]);
-                jumpLine();
+                 
                 return empty_tree;
             }
             else{
@@ -262,7 +263,7 @@ tree<std::string> preprocessing(){
     }
     else{
         printf("Error in line %d : the token after \"#\" is not \"include\" or \"define\" \n",line_info[token_counter1-1]);
-        jumpLine();
+         
         return empty_tree;
     }
     return tmp_tree;
@@ -281,7 +282,7 @@ tree<std::string> external_defination_list(){
     }
     else if(!LookupCapitalKeywords(w)){
         printf("Error in line %d : the first token(i.e.,\"%s\") of the external defination list is not a keyword\n",line_info[token_counter1-1],token_text[token_counter1-1]);
-        jumpLine();
+         
         return empty_tree;
     }
     tree<std::string> p;
@@ -312,7 +313,7 @@ tree<std::string> external_defination(){
     tree<std::string> tmp_tree;
     if(!LookupCapitalKeywords(w)){
         printf("Error in line %d : the first token(i.e., \"%s\") of the external defination is not a keyword\n",line_info[token_counter1-1],token_text[token_counter1-1]);
-        jumpLine();
+         
         return empty_tree;
     }
     else{   
@@ -320,7 +321,7 @@ tree<std::string> external_defination(){
         readtoken();
         if(strcmp(w,"ID")){
             printf("Error in line %d : the second token(i.e., \"%s\") of the external defination is not an identifier\n",line_info[token_counter1-1],token_text[token_counter1-1]);
-            jumpLine();
+             
             return empty_tree;
         }
         strcpy(temp_text,token_text[token_counter1-1]);
@@ -335,7 +336,7 @@ tree<std::string> external_defination(){
         if(!tmp_tree.empty())  return tmp_tree;
         else{
             printf("Error in line %d : the external defination is illegal\n",line_info[token_counter1-1]);
-            jumpLine();
+             
             return empty_tree;
         }
     }
@@ -360,7 +361,7 @@ tree<std::string> external_variable_defination(){
     while(1){
         if(strcmp(w,"COMMA") && strcmp(w,"SEMICOLON")){
             printf("Error in line %d : undefined token(i.e., \"%s\") in external_variable_defination\n",line_info[token_counter1-1],token_text[token_counter1-1]);
-            jumpLine();
+             
             return empty_tree;
         }
         else if(!strcmp(w,"SEMICOLON")){
@@ -371,7 +372,7 @@ tree<std::string> external_variable_defination(){
             readtoken();
             if(strcmp(w,"ID")){
                 printf("Error in line %d :\"%s\" is not an identifier in external_variable_defination\n",line_info[token_counter1-1],token_text[token_counter1-1]);
-                jumpLine();
+                 
                 tmp_tree.clear();
                 return empty_tree;
             }
@@ -419,7 +420,7 @@ tree<std::string> function_defination(){
     }
     else{
         printf("Error in line %d : Neither SEMICOLON nor LBRACE . \n",line_info[token_counter1-1]);
-        jumpLine();
+         
         tmp_tree.clear();
         return empty_tree;
     }
@@ -464,7 +465,7 @@ tree<std::string> formal_parameter(){
     root=tmp_tree.set_head("formal_parameter");
     if(!LookupCapitalKeywords(w)){
         printf("Error in line %d :the type of the formal parameter(i.e., \"%s\") is illegal \n",line_info[token_counter1-1],w);
-        jumpLine();
+         
         return empty_tree;
     }
     else{
@@ -472,7 +473,7 @@ tree<std::string> formal_parameter(){
         readtoken();
         if(strcmp(w,"ID")){
             printf("Error in line %d :the name of the formal parameter(i.e., \"%s\") is illegal \n",line_info[token_counter1-1],token_text[token_counter1-1]);
-            jumpLine();
+             
             return empty_tree;
         }
         else{
@@ -487,7 +488,7 @@ tree<std::string> formal_parameter(){
             }
             else{
                 printf("Error in line %d :undefined token(i.e., \"%s\") in the formal parameter list\n",line_info[token_counter1-1],token_text[token_counter1-1]);
-                jumpLine();
+                 
                 return empty_tree;
             }
         }
@@ -525,7 +526,7 @@ tree<std::string> compound_statement(){
     if(strcmp(w,"RBRACE")){
         printf("Error in line %d : the end of the compound statement(i.e.,\"%s\") is not a RBRACE .\n",line_info[token_counter1-1],token_text
         [token_counter1-1]);
-        jumpLine();
+         
         tmp_tree.clear();
         return empty_tree;
     }
@@ -574,7 +575,7 @@ tree<std::string> local_variable_defination(){
     readtoken();
     if(strcmp(w,"ID")){
         printf("Error in line %d : the name of the local variable(i.e., \"%s\") is illegal \n",line_info[token_counter1-1],token_text[token_counter1-1]);
-        jumpLine();
+         
         return empty_tree;
     }
     else{
@@ -584,7 +585,7 @@ tree<std::string> local_variable_defination(){
         while(1){
             if(strcmp(w,"COMMA") && strcmp(w,"SEMICOLON") && strcmp(w,"LBRACKET")){
                 printf("Error in line %d : undefined token(i.e., \"%s\") in local_variable_defination\n",line_info[token_counter1-1],token_text[token_counter1-1]);
-                jumpLine();
+                 
                 return empty_tree;
             }
             else if(!strcmp(w,"SEMICOLON")){
@@ -595,7 +596,7 @@ tree<std::string> local_variable_defination(){
                 readtoken();
                 if(strcmp(w,"INT_LITERAL")){
                     printf("Error in line %d : the size of the array is not an integer literal\n",line_info[token_counter1-1]);
-                    jumpLine();
+                     
                     return empty_tree;
                 }
                 else{
@@ -616,7 +617,7 @@ tree<std::string> local_variable_defination(){
                 readtoken();
                 if(strcmp(w,"ID")){
                     printf("Error in line %d :\"%s\" is not an identifier in local_variable_defination\n",line_info[token_counter1-1],token_text[token_counter1-1]);
-                    jumpLine();
+                     
                     return empty_tree;
                 }
                 else{
@@ -654,7 +655,7 @@ tree<std::string> statement_list(){
     if(p.empty()){
         if(errors>0){
             printf("Error in line %d : undefined token(i.e., \"%s\") in the statement\n",line_info[token_counter1-1],token_text[token_counter1-1]);
-            jumpLine();
+             
             return empty_tree;
         }
         else{
@@ -694,7 +695,7 @@ tree<std::string> statement(){
         readtoken();
         if(strcmp(w,"LP")){
             printf("Error in line %d : the if condition does not begins with LP \n",line_info[token_counter1-1]);
-            jumpLine();
+             
             return empty_tree;
         }
         readtoken();
@@ -729,7 +730,7 @@ tree<std::string> statement(){
         readtoken();
         if(strcmp(w,"LP")){
             printf("Error in line %d : the while condition does not begin with \"(\"\n",line_info[token_counter1-1]);
-            jumpLine();
+             
             return empty_tree;
         }
         readtoken();
@@ -747,7 +748,7 @@ tree<std::string> statement(){
         readtoken();
         if(strcmp(w,"LP")){
             printf("Error in line %d : the for condition does not begin with \"(\"\n",line_info[token_counter1-1]);
-            jumpLine();
+             
             return empty_tree;
         }
         readtoken();
@@ -795,7 +796,7 @@ tree<std::string> statement(){
         readtoken();
         if(strcmp(w,"SEMICOLON")){
             printf("Error in line %d : the break statement does not end with \";\"\n",line_info[token_counter1-1]);
-            jumpLine();
+             
             return empty_tree;
         }
         root=tmp_tree.set_head("break_statement");
@@ -806,7 +807,7 @@ tree<std::string> statement(){
         readtoken();
         if(strcmp(w,"SEMICOLON")){
             printf("Error in line %d : the continue statement does not end with \";\"\n",line_info[token_counter1-1]);
-            jumpLine();
+             
             return empty_tree;
         }
         root=tmp_tree.set_head("continue_statement");
@@ -882,7 +883,7 @@ tree<std::string> expression(int endsym){
     int error=0;
     std::string t;
     p=tmp_node.set_head("node");
-    //root=tmp_tree.begin();
+  
    
     while(  ( strcmp(w,"SHARP") || operator_stack.top().compare("SHARP") )  && !error){
         if(!strcmp(w,"ID")||!strcmp(w,"INT_LITERAL")||!strcmp(w,"FLOAT_LITERAL")||!strcmp(w,"CHAR_LITERAL")||!strcmp(w,"LONG_LITERAL")||!strcmp(w,"DOUBLE_LITERAL")){
@@ -965,7 +966,7 @@ tree<std::string> expression(int endsym){
     }
     else{
         printf("Error in line %d : The current token is %s\n",line_info[token_counter1-1],token_text[token_counter1-1]);
-        jumpLine();
+         
         return empty_tree;
     }  
 }

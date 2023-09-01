@@ -79,7 +79,7 @@ int main(){
     {
         printf("Error opening file in scanner.\n");
         return false;
-    };
+    }
 
     //lexical analysis
     scanner(fp,filename);

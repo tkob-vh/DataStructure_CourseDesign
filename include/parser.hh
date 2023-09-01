@@ -50,7 +50,7 @@ bool isFunction(char* w);
 Token_kind StrtoEnum(char * str);
 int getTableNum(const char * w);
 char getOperatorPriority(const char* w1,char* w2);
-
+void jumpLine();
 tree<std::string>::iterator program();
 tree<std::string> preprocessing_list();
 tree<std::string> preprocessing();
