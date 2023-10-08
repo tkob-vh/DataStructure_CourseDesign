@@ -1,4 +1,4 @@
-# Data Structure Experiment -- A crude front-end of a compiler
+# Data Structure Experiment -- A naive front-end of a compiler
 ## Environment:
     Operating System: wsl2 (Debian 12.2.0-14)
     Architecture: x86_64
